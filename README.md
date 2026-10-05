@@ -24,28 +24,43 @@ Testy interfejsu instalatora, wpisów rejestru i działania dodatku wymagają Wi
 z desktopowym Excelem. Zielone CI bez tych prób nie jest potwierdzeniem poprawnej
 instalacji na stanowisku produkcyjnym.
 
-## Aktualizator 1.1.0 i osobne paczki dodatku
+## Aktualizator 1.2.0 — pierwsza instalacja zawsze z aktualnego katalogu
 
-Jednorazowo pobierz nowy ZekonSetup.exe (aktualizator 1.1.0). Dotychczasowy EXE
-nie ma obsługi zewnętrznych paczek. Zachowaj nowy program w stałym miejscu.
-Numer programu aktualizującego i numer dodatku są niezależne.
+Przy pierwszym uruchomieniu na nowym komputerze i przy kolejnej aktualizacji
+używaj **Zainstaluj / Aktualizuj online**. Program pobiera `updates/latest.json`
+z tego repozytorium, a następnie wskazaną wersją paczkę `.zekonupdate`.
+Nie zawiera wbudowanej starej wersji dodatku. Brak internetu lub błąd pobierania
+kończy operację komunikatem; nie powoduje instalacji starej wersji.
 
-Kolejne aktualizacje dodatku:
-1. Pobierz mały plik `ZekonTools_<wersja>.zekonupdate`. Nie rozpakowuj go.
-2. Zapisz dokumenty i zamknij Excel.
-3. Uruchom zachowany `ZekonSetup.exe`, wybierz **Aktualizuj z pliku...** i wskaż paczkę.
-4. Otwórz Excel i sprawdź numer wersji w panelu ZEKON.
+Na 2026-10-05 katalog wskazuje **1.0.0-rc2a**, ze zweryfikowanym XLAM i raportem
+Excel PASS. Zmiany źródłowe rc2b są w trakcie przygotowania i nie są oferowane
+jako gotowa aktualizacja przed zbudowaniem i testem XLAM.
 
-Przycisk **Zainstaluj dołączony dodatek** instaluje wersję wbudowaną w EXE;
-nie służy do wczytywania kolejnych aktualizacji. Nowe EXE jest potrzebne tylko
-przy zmianie samego aktualizatora lub formatu paczek, nie przy zwykłej poprawce VBA.
-Plik aktualizacji można przekazać na inne stanowiska i zastosować offline.
-Paczka zawiera XLAM, logo oraz manifest z numerem i sumami kontrolnymi. Jest
-sprawdzana tym samym mechanizmem co pakiet wbudowany. Sumy kontrolne wykrywają
-uszkodzenia, nie zastępują podpisu wydawcy. Pobieraj paczki z firmowego źródła.
+Po udanej operacji wyświetla się osobne okno potwierdzenia i numer dodatku.
+Numer jest też stale widoczny w aktualizatorze, również podczas pobierania.
+Numer programu aktualizującego (1.2.0) jest niezależny od numeru dodatku.
 
-Program działa na Windows x64, również przy 32-bitowym Excelu. Nie wymaga
-PowerShella ani osobnego instalowania .NET. Nie zmienia zabezpieczeń makr.
+Przy braku internetu można użyć **Aktualizuj z pliku...** i wskazać wcześniej
+pobraną paczkę. Nie rozpakowuj pliku `.zekonupdate`. Taki wybór instaluje wersję
+z wybranej paczki, a nie automatycznie najnowszą wersję internetową.
+
+Zapisz dokumenty i zamknij Excel przed operacją. Program działa na Windows x64,
+również z 32-bitowym Excelem, nie wymaga PowerShella ani instalowania .NET.
+Sumy kontrolne wykrywają uszkodzenia; nie są podpisem wydawcy.
+
+### Publikacja kolejnej wersji dodatku
+
+1. Zbuduj i przetestuj nowy XLAM w Excelu. Sprawdź zgodność ze źródłami.
+2. Użyj `tools/package_release.py` z nową wersją i rosnącym numerem wydania.
+3. Dodaj wynik jako `updates/ZekonTools_<wersja>.zekonupdate`, bez nadpisywania starszych paczek.
+4. Zapisz `updates/proof_<wersja>.json` z sumą XLAM i rzeczywistym raportem testów.
+5. W tej samej zmianie ustaw `updates/latest.json`: SchemaVersion=1, ReleaseNumber,
+   Version oraz Sha256 całej paczki. Sprawdź `python tools/verify_update_feed.py`.
+6. Od tej chwili ten sam aktualizator pobierze nową wersję na wszystkich stanowiskach,
+   kiedy użytkownik kliknie przycisk online. Nie jest to automatyczna instalacja w tle.
+
+Nowe EXE jest potrzebne przy zmianach samego aktualizatora, nie przy zwykłej poprawce VBA.
+Przejście ze starszego aktualizatora wymaga jednorazowego zastąpienia EXE wersją 1.2.0.
 
 ## Aktualizacja i wycofanie
 
@@ -62,33 +77,13 @@ PowerShella ani osobnego instalowania .NET. Nie zmienia zabezpieczeń makr.
 - Stan: `%LOCALAPPDATA%\ZekonTools\installation.json`.
   Błędy: `%LOCALAPPDATA%\ZekonTools\installer-error.log`.
 
-## Przygotowanie kolejnej wersji — tylko osoba utrzymująca projekt
+## Budowanie aktualizatora
 
-1. Zmień kod VBA, nadaj nowy numer wersji i uzupełnij `addin/HISTORIA_WERSJI.md`.
-   Zachowaj zgodność APP_VERSION, tytułu, generatorów i skryptu budowania.
-2. Zbuduj dodatek w kontrolowanym Windows z licencjonowanym Excelem.
-   `addin/Build-Zekon.ps1` to dotychczasowa pomocnicza metoda deweloperska;
-   komputery użytkowników jej nie uruchamiają. Alternatywnie generator
-   `addin/tools/generate_builder.py` tworzy instalator VBA dla lokalnego Excela.
-3. Przejdź testy natywne oraz sprawdź rzeczywiste dane. Zachowaj plik XLAM i
-   `test-result.txt` z tego samego budowania. Podpisz projekt VBA, jeśli firma
-   korzysta z certyfikatu. Nie zmieniaj kodu po podpisaniu.
-4. Dodaj do `release-input/` pliki `ZekonTools.xlam` i `test-result.txt`.
-   Nie dodawaj prywatnych skoroszytów, haseł, certyfikatów z kluczem ani tokenów.
-5. GitHub **Actions → Build complete ZekonSetup → Run workflow**.
-   Podaj wersję i rosnący `release_number`; nie używaj ponownie numerów.
-6. Pobierz artefakt `ZekonSetup-review`. Przetestuj instalację, migrację,
-   aktualizację, wycofanie i odłączenie na testowym stanowisku Windows/Excel.
-7. Podpisz EXE firmowym certyfikatem podpisu kodu i znacznikiem czasu, jeżeli
-   jest dostępny. Po podpisaniu oblicz ponownie SHA-256; hash z CI dotyczy pliku
-   przed podpisaniem. Klucz pozostaje poza repozytorium.
-8. Utwórz zatwierdzone wydanie GitHub z EXE, sumą kontrolną i opisem zmian.
-   Stabilne wydanie pojawi się pod adresem `/releases/latest`.
-   Nie publikuj wersji do użytkowania przed zakończeniem testów.
-
-GitHub Actions buduje instalator; nie zakłada obecności licencjonowanego Excela
-na standardowych runnerach. W przyszłości budowanie VBA można przenieść na
-wydzielony runner Windows/Excel kontrolowany przez firmę. Nie jest on skonfigurowany.
+GitHub Actions buduje program Windows oraz sprawdza opublikowany katalog paczek.
+`tools/verify_update_feed.py` weryfikuje SHA256 paczki i jej zawartości, wersję
+XLAM oraz powiązanie z zapisanym raportem Excel. Publikowanie kolejnego dodatku
+nie wymaga przebudowania aktualizatora. Kontrolowany Windows z Excelem nadal
+jest potrzebny do zbudowania i natywnego przetestowania zmienionego VBA.
 
 ## Podpisy i ostrzeżenia Windows
 
@@ -105,8 +100,9 @@ dotnet run --project installer.Tests/Installer.Tests.csproj --configuration Rele
 dotnet build installer/ZekonSetup.csproj --configuration Release
 ```
 
-`dotnet build` bez payloadu służy tylko sprawdzeniu kompilacji. Takiego pliku nie
-wolno dystrybuować. `dotnet publish` i workflow wydania wymagają payloadu z XLAM.
+Aktualizator 1.2.0 nie osadza XLAM. Budowanie wydania wymaga poprawnego katalogu
+opublikowanych, przetestowanych paczek. Testy UI i instalacji na stanowisku Windows
+pozostają odrębnym etapem odbioru.
 
 ## Źródła techniczne
 

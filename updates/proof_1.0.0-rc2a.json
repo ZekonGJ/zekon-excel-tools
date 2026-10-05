@@ -1,0 +1,5 @@
+{
+  "XlamSha256": "F0AB7CAD4F9C6D05B17ADAF78495CA2666F0B30C49AEF386122634F70D6F8780",
+  "NativeExcelReport": "2026-10-05 10:36:21\nPASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore.\n",
+  "SourceComparison": "All eight modules compared with native XLAM on 2026-10-05 before publication"
+}

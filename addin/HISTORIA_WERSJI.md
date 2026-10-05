@@ -199,3 +199,9 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - Zastąpiono nieaktualny statyczny numer w kontrolce version odczytem APP_VERSION przy każdym otwarciu panelu.
 - Test zgodności stałego napisu z wersją kodu. Wymaga natywnego zbudowania XLAM i PASS.
 - Gotowy aktualizator 1.1.1 jest niezależny od tej zmiany i obsługuje paczki dodatku.
+
+## Aktualizator 1.2.0 — najnowsza paczka przy pierwszej instalacji
+- Pobiera aktualny katalog i paczkę z GitHuba przy każdym kliknięciu online, także na nowym komputerze.
+- Usunięto zależność instalacji od starego XLAM osadzonego w EXE; błędy sieci nie uruchamiają starej wersji.
+- Zachowano aktualizacje offline, potwierdzenia zakończenia i dodano stały numer zainstalowanego dodatku.
+- Katalog wskazuje przetestowane rc2a. rc2b oczekuje na natywny XLAM i PASS.

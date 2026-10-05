@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using System.Reflection;
+using System.Net.Http;
 using System.Text.Json;
 namespace Zekon;
 internal static class Program
@@ -15,24 +15,26 @@ internal static class Program
 public sealed class SetupWindow : Form
 {
     private readonly Label status = new() { AutoSize = false, Width = 540, Height = 110 };
-    private readonly Button install = new() { Text = "Zainstaluj dolaczony dodatek", Width = 235, Height = 42 };
+    private readonly Button install = new() { Text = "Zainstaluj / Aktualizuj online", Width = 235, Height = 42 };
     private readonly Button rollback = new() { Text = "Przywroc poprzednia wersje", Width = 220, Height = 34 };
+    private readonly Label installedVersion = new() { AutoSize = false, Width = 540, Height = 24, Location = new Point(26, 72) };
     private bool working;
     private readonly string stateFile = Path.Combine(Package.Root, "installation.json");
     public SetupWindow()
     {
-        Text = "ZEKON - instalator / aktualizator 1.1.1"; Width = 610; Height = 425;
+        Text = "ZEKON - instalator / aktualizator 1.2.0"; Width = 610; Height = 425;
         StartPosition = FormStartPosition.CenterScreen; FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false;
         Font = new Font("Segoe UI", 10); BackColor = Color.White;
         var title = new Label { Text = "ZEKON | Narzedzia Excel", Font = new Font("Segoe UI", 22, FontStyle.Bold), ForeColor = Color.FromArgb(189,32,45), AutoSize = true, Location = new Point(24,24) };
         Controls.Add(title);
-        status.Location = new Point(26,85); Controls.Add(status);
+        installedVersion.Font = new Font("Segoe UI", 11, FontStyle.Bold); Controls.Add(installedVersion);
+        status.Location = new Point(26,102); status.Height = 94; Controls.Add(status);
         install.Location = new Point(26,205); install.BackColor = Color.FromArgb(189,32,45); install.ForeColor = Color.White;
         rollback.Location = new Point(26,265);
         var updates = new Button { Text = "Aktualizuj z pliku...", Location = new Point(274,205), Width = 250, Height = 42 };
         var remove = new Button { Text = "Odlacz dodatek", Location = new Point(274,265), Width = 250, Height = 34 };
         Controls.AddRange(new Control[] {install,rollback,updates,remove});
-        install.Click += (_,_) => Run(Install, "Instalacja ukończona"); rollback.Click += (_,_) => Run(Rollback, "Przywrócono poprzednią wersję");
+        install.Click += (_,_) => Run(InstallLatest); rollback.Click += (_,_) => Run(Rollback, "Przywrócono poprzednią wersję");
         updates.Click += (_,_) => SelectUpdate();
         remove.Click += (_,_) => { if (MessageBox.Show("Odlaczyc dodatek ZEKON od Excela? Pliki i ustawienia pozostana.", "ZEKON", MessageBoxButtons.YesNo) == DialogResult.Yes) Run(Detach, "Dodatek odłączony"); };
         FormClosing += (_,e) => { if (working) e.Cancel = true; };
@@ -56,8 +58,14 @@ public sealed class SetupWindow : Form
         });
     }
     private InstallState? State() => File.Exists(stateFile) ? JsonSerializer.Deserialize<InstallState>(File.ReadAllText(stateFile)) : null;
+    private void RefreshInstalledVersion()
+    {
+        try { installedVersion.Text = "Zainstalowany dodatek: " + (State()?.Current ?? "brak"); }
+        catch { installedVersion.Text = "Zainstalowany dodatek: nie mozna odczytac wersji"; }
+    }
     private void RefreshState()
     {
+        RefreshInstalledVersion();
         try { var s = State(); status.Text = s == null ? "Zapisz dokumenty i zamknij Excel.\nInstalacja dla biezacego uzytkownika, bez uprawnien administratora." : "Zainstalowana wersja: " + s.Current + "\nPrzed aktualizacja zapisz dokumenty i zamknij Excel."; rollback.Enabled = s?.Previous != null; }
         catch { status.Text = "Nie mozna odczytac stanu instalacji. Zachowaj plik installation.json do diagnostyki."; install.Enabled = false; rollback.Enabled = false; }
     }
@@ -70,6 +78,7 @@ public sealed class SetupWindow : Form
         try
         {
             await Task.Run(action);
+            RefreshInstalledVersion();
             var current = State();
             string details = current == null
                 ? "Dodatek ZEKON został odłączony od Excela. Pliki i ustawienia zostały zachowane."
@@ -86,7 +95,7 @@ public sealed class SetupWindow : Form
             status.Text = "Operacja nie zostala zakonczona.\n" + e.Message;
             MessageBox.Show(e.Message + "\n\nLog: " + log, "ZEKON", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        finally { working = false; foreach (Control c in Controls) if (c is Button) c.Enabled = true; try { rollback.Enabled = State()?.Previous != null; } catch { rollback.Enabled = false; } }
+        finally { RefreshInstalledVersion(); working = false; foreach (Control c in Controls) if (c is Button) c.Enabled = true; try { rollback.Enabled = State()?.Previous != null; } catch { rollback.Enabled = false; } }
     }
     private void SaveState(InstallState state)
     {
@@ -95,9 +104,16 @@ public sealed class SetupWindow : Form
         File.WriteAllText(tmp, JsonSerializer.Serialize(state));
         File.Move(tmp, stateFile, true);
     }
-    private void Install()
+    private void InstallLatest()
     {
-        using var payload = Assembly.GetExecutingAssembly().GetManifestResourceStream("Zekon.Payload") ?? throw new InvalidDataException("Ten plik nie zawiera przetestowanego dodatku. Pobierz kompletne wydanie.");
+        using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(2) };
+        byte[] bytes;
+        try { bytes = UpdateFeed.DownloadAsync(client).GetAwaiter().GetResult(); }
+        catch (Exception e) when (e is HttpRequestException || e is TaskCanceledException)
+        {
+            throw new IOException("Nie mozna pobrac najnowszej wersji. Sprawdz internet lub uzyj Aktualizuj z pliku. Nie zainstalowano starszej wersji.", e);
+        }
+        using var payload = new MemoryStream(bytes);
         InstallPayload(payload);
     }
     private void InstallPayload(Stream payload)

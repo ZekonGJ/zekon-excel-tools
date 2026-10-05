@@ -11,10 +11,10 @@ Check(plan.Length == 2 && plan[0] == other && plan[1].Contains(nextPath), "Migra
 Check(Package.PlanEntries(plan, null).SequenceEqual(new[] { other }), "Detach preserves foreign add-ins");
 Check(!Package.IsOwnedEntry("/R \"" + Package.Root + "-other/ZekonTools.xlam\""), "Directory boundary");
 try { Package.ReleaseFolder("../outside"); throw new Exception("Traversal accepted"); } catch (InvalidDataException) { }
-static MemoryStream MakePackage(bool corrupt = false, bool extra = false)
+static MemoryStream MakePackage(bool corrupt = false, bool extra = false, string version = "1.0.0-rc2", int release = 2)
 {
     byte[] addin = new byte[] {1,2,3}, logo = new byte[] {4,5};
-    var manifest = new PackageManifest(2,"1.0.0-rc2","ZekonTools.xlam",new() {
+    var manifest = new PackageManifest(release,version,"ZekonTools.xlam",new() {
         ["ZekonTools.xlam"] = Convert.ToHexString(SHA256.HashData(addin)), ["logo.bmp"] = Convert.ToHexString(SHA256.HashData(logo)) });
     var stream = new MemoryStream();
     using (var zip = new ZipArchive(stream,ZipArchiveMode.Create,true))
@@ -44,3 +44,36 @@ foreach (var mode in new[] {"valid","tampered","extra"})
     finally { if(Directory.Exists(stage)) Directory.Delete(stage,true); if(File.Exists(updateFile)) File.Delete(updateFile); }
 }
 Console.WriteLine("PASS: registration plan, ownership boundaries, traversal, hash validation, payload allowlist for embedded and external update files.");
+
+// The same updater discovers a newer feed without a new executable or installed state.
+foreach (var release in new[] { 3, 4 })
+{
+    string version = release == 3 ? "1.0.0-rc2a" : "1.0.0-rc2b";
+    using var generated = MakePackage(version: version, release: release);
+    byte[] bytes = generated.ToArray();
+    var offer = new UpdateOffer(1, release, version, Convert.ToHexString(SHA256.HashData(bytes)));
+    using var client = new System.Net.Http.HttpClient(new FeedHandler(offer, bytes));
+    Check(UpdateFeed.DownloadAsync(client).GetAwaiter().GetResult().SequenceEqual(bytes), "Latest feed must determine installed package");
+    try { UpdateFeed.Verify(offer with { Version = "9.0.0" }, bytes); throw new Exception("Wrong manifest version accepted"); } catch (InvalidDataException) { }
+    bytes[0] ^= 1;
+    try { UpdateFeed.Verify(offer, bytes); throw new Exception("Corrupted download accepted"); } catch (InvalidDataException) { }
+}
+try { UpdateFeed.Parse(JsonSerializer.Serialize(new UpdateOffer(1, 3, "../escape", new string('A',64)))); throw new Exception("Feed traversal accepted"); } catch (InvalidDataException) { }
+using (var offline = new System.Net.Http.HttpClient(new FeedHandler(null, Array.Empty<byte>())))
+{
+    try { UpdateFeed.DownloadAsync(offline).GetAwaiter().GetResult(); throw new Exception("Offline install should fail, not use stale fallback"); } catch (System.Net.Http.HttpRequestException) { }
+}
+Console.WriteLine("PASS: latest-feed versions, download hash, version consistency, traversal, offline failure without stale fallback.");
+sealed class FeedHandler(UpdateOffer? offer, byte[] package) : System.Net.Http.HttpMessageHandler
+{
+    protected override Task<System.Net.Http.HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage request, CancellationToken token)
+    {
+        if (offer == null) throw new System.Net.Http.HttpRequestException("Offline test");
+        string expected = UpdateFeed.BaseUrl + "ZekonTools_" + offer.Version + ".zekonupdate";
+        bool catalog = request.RequestUri!.AbsoluteUri.StartsWith(UpdateFeed.BaseUrl + "latest.json?check=", StringComparison.Ordinal);
+        if (!catalog && request.RequestUri.AbsoluteUri != expected) throw new Exception("Unexpected update URL");
+        return Task.FromResult(new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK) {
+            Content = catalog ? new System.Net.Http.StringContent(JsonSerializer.Serialize(offer)) : new System.Net.Http.ByteArrayContent(package)
+        });
+    }
+}
