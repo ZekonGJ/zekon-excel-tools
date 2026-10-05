@@ -178,3 +178,8 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - Poprawka rozbijania przy AutoFilter: wybór pozycji przed wyłączeniem filtra, kopiowanie na ciągłym zakresie, odtworzenie kryteriów i rozszerzenie zakresu.
 - Próba odtworzenia filtra także po błędzie lub anulowaniu. Filtr ikon odrzucany przed modyfikacją.
 - Testy Excel: filtrowane nieciągłe pozycje, ostatni wiersz, wszystkie wiersze, dwa kryteria i błąd walidacji. Wymagany nowy raport PASS; stary XLAM rc2 nie jest wydaniem tej poprawki.
+
+### Pakiet EXE rc2a (numer wydania 3)
+- 2026-10-05 10:36:21: natywne testy Excel PASS, w tym filtrowane rozbijanie.
+- Otrzymany XLAM zweryfikowany względem wszystkich 8 modułów źródłowych.
+- Instalator zawiera rc2a; brak podpisu wydawcy, test aktualizacji stanowiska pozostaje do potwierdzenia.

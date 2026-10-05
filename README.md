@@ -6,8 +6,9 @@ Projekt: https://github.com/ZekonGJ/zekon-excel-tools
 
 Źródła zawierają poprawkę kopiowania przy aktywnym filtrze. Pakiet developerski
 `support/ZEKON_BUDUJ_RC2A_B04.zip` buduje tę wersję i uruchamia nowe testy Excel.
-Nie wydano jeszcze EXE z tą poprawką: wymagany aktualny XLAM i raport PASS.
-Dotychczasowy EXE i release-input dotyczą rc2.
+Otrzymano XLAM rc2a i raport PASS z 2026-10-05 10:36:21, w tym nowe testy
+rozbijania pod filtrem. Wszystkie 8 modułów zgodne ze źródłami; pakiet release-input
+zawiera rc2a. Instalator wymaga jeszcze sprawdzenia aktualizacji na stanowisku użytkownika.
 
 ## Stan rc2 na 2026-10-05
 

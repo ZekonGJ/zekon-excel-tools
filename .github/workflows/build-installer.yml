@@ -7,11 +7,11 @@ on:
     inputs:
       version:
         description: 'Must match the tested XLAM and APP_VERSION'
-        default: '1.0.0-rc2'
+        default: '1.0.0-rc2a'
         required: true
       release_number:
         description: 'Increasing positive integer, never reuse for different content'
-        default: '2'
+        default: '3'
         required: true
 permissions:
   contents: read
@@ -30,8 +30,8 @@ jobs:
       - run: dotnet run --project installer.Tests/Installer.Tests.csproj --configuration Release
       - name: Require tested XLAM and prepare embedded payload
         env:
-          RELEASE_VERSION: ${{ inputs.version || '1.0.0-rc2' }}
-          RELEASE_NUMBER: ${{ inputs.release_number || '2' }}
+          RELEASE_VERSION: ${{ inputs.version || '1.0.0-rc2a' }}
+          RELEASE_NUMBER: ${{ inputs.release_number || '3' }}
         run: python tools/package_release.py --version "$env:RELEASE_VERSION" --release-number "$env:RELEASE_NUMBER"
       - run: dotnet publish installer/ZekonSetup.csproj --configuration Release --output dist
       - name: Installer checksum
