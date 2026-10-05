@@ -162,3 +162,9 @@ kontrolę integralności, wersjonowane katalogi, rollback kolejnych instalacji,
 skrót aktualizacji do GitHub Releases i konfigurację Actions.
 Brak podpisów i aktualnego binarnego XLAM blokuje gotowe wydanie produkcyjne.
 Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
+
+## Generator RC2 / B03 — 2026-10-05
+- Jednoznaczna nazwa pliku i makra ZEKON_BUDUJ_RC2_B03 oraz komunikat wersji przed budowaniem.
+- Wszystkie źródła i logo osadzone; brak zależności od wcześniej rozpakowanego folderu.
+- Osobny folder każdej próby, bez nadpisywania istniejących dodatków; otwarcie folderu po PASS.
+- Kod funkcjonalny dodatku pozostaje 1.0.0-rc2. Sprawdzono odtworzenie źródeł i logo oraz limity długości wierszy; uruchomienie Excel wymaga testu natywnego.
