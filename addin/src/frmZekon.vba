@@ -6,6 +6,7 @@ Private busy As Boolean
 Private Sub UserForm_Initialize()
     Dim wb As Workbook
     Me.Caption = "Narzedzia ZEKON | " & APP_VERSION
+    Me.Controls("version").Caption = "Wersja dodatku" & vbLf & APP_VERSION
     imgLogo.Picture = LoadPicture(ThisWorkbook.Path & "\logo.bmp")
     For Each wb In Application.Workbooks
         If Not wb.IsAddin And wb.Name <> ThisWorkbook.Name Then cboBook.AddItem wb.Name

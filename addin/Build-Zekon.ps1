@@ -5,8 +5,8 @@ $excel = $null
 $book = $null
 $success = $false
 $candidateCreated = $false
-$destination = Join-Path $env:LOCALAPPDATA 'ZekonTools\1.0.0-rc2a'
-$output = Join-Path $destination 'ZekonTools_1.0.0-rc2a.xlam'
+$destination = Join-Path $env:LOCALAPPDATA 'ZekonTools\1.0.0-rc2b'
+$output = Join-Path $destination 'ZekonTools_1.0.0-rc2b.xlam'
 try {
     if (Get-Process EXCEL -ErrorAction SilentlyContinue) {
         throw 'Zamknij wszystkie okna Excela i uruchom instalator ponownie.'
@@ -50,8 +50,8 @@ try {
     $form.CodeModule.AddFromString([IO.File]::ReadAllText((Join-Path $root 'src\frmZekon.vba'), [Text.Encoding]::UTF8))
     $components.Item($book.CodeName).CodeModule.AddFromString([IO.File]::ReadAllText((Join-Path $root 'src\ThisWorkbook.vba'), [Text.Encoding]::UTF8))
     Copy-Item (Join-Path $root 'assets\logo.bmp') (Join-Path $destination 'logo.bmp')
-    $book.BuiltinDocumentProperties.Item('Title').Value = 'Narzedzia ZEKON 1.0.0-rc2a'
-    $book.BuiltinDocumentProperties.Item('Comments').Value = '1.0.0-rc2a; modular VBA; Windows Excel'
+    $book.BuiltinDocumentProperties.Item('Title').Value = 'Narzedzia ZEKON 1.0.0-rc2b'
+    $book.BuiltinDocumentProperties.Item('Comments').Value = '1.0.0-rc2b; modular VBA; Windows Excel'
     $book.IsAddin = $true
     $book.SaveAs($output, 55)
     $candidateCreated = $true

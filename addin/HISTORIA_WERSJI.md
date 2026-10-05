@@ -194,3 +194,8 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - Wyraźne okno potwierdzenia po udanej aktualizacji/instalacji, z numerem zainstalowanego dodatku.
 - Osobne potwierdzenia przywrócenia wersji i odłączenia; błędy nie wyświetlają potwierdzenia sukcesu.
 - Dodatek rc2a i format .zekonupdate bez zmian.
+
+## Dodatek 1.0.0-rc2b — stała wersja panelu
+- Zastąpiono nieaktualny statyczny numer w kontrolce version odczytem APP_VERSION przy każdym otwarciu panelu.
+- Test zgodności stałego napisu z wersją kodu. Wymaga natywnego zbudowania XLAM i PASS.
+- Gotowy aktualizator 1.1.1 jest niezależny od tej zmiany i obsługuje paczki dodatku.

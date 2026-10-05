@@ -1,7 +1,7 @@
 Option Explicit
 
 Public Const APP_ID As String = "ZekonTools"
-Public Const APP_VERSION As String = "1.0.0-rc2a"
+Public Const APP_VERSION As String = "1.0.0-rc2b"
 Public LastCopyPath As String
 Private progressForm As Object
 Private progressActive As Boolean, cancelRequested As Boolean

@@ -93,9 +93,10 @@ Public Function ZekonSelfTest() As String
     AssertTrue Not bt.Rows(8).Hidden And bt.Rows(9).Hidden And Not bt.Rows(10).Hidden, "Filtr ukladu Lieferliste"
     wb.Close SaveChanges:=False: Set wb = Nothing
     Load frmZekon
+    AssertTrue frmZekon.Controls("version").Caption = "Wersja dodatku" & vbLf & APP_VERSION, "Stala wersja panelu zgodna z kodem"
     Unload frmZekon
     Application.DisplayAlerts = oldAlerts
-    ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore."
+    ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label."
     Exit Function
 Bad:
     e = Err.Number: message = Err.Description
