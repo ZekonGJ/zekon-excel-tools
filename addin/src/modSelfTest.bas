@@ -12,6 +12,7 @@ Public Function ZekonSelfTest() As String
     oldAlerts = Application.DisplayAlerts
     Set wb = Workbooks.Add(xlWBATWorksheet): Set ws = wb.Worksheets(1)
     TestAutoStart wb
+    TestSplitWithFilter wb
     TestWorkLifecycle
     ws.Name = "Test"
     ws.Range("F2").Value2 = 2.5: ws.Range("F3").Formula = "=2.5"
@@ -94,7 +95,7 @@ Public Function ZekonSelfTest() As String
     Load frmZekon
     Unload frmZekon
     Application.DisplayAlerts = oldAlerts
-    ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization."
+    ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore."
     Exit Function
 Bad:
     e = Err.Number: message = Err.Description
@@ -162,4 +163,48 @@ Private Sub TestWorkLifecycle()
     EndWork
     AssertTrue e <> 0, "Zadanie przerwania jest obslugiwane"
     AssertTrue Application.Calculation = previous, "Przywrocenie przeliczania po przerwaniu"
+End Sub
+
+Private Sub TestSplitWithFilter(ByVal wb As Workbook)
+    Dim ws As Worksheet, n As Long, scenario As Long, e As Long
+    Set ws = wb.Worksheets.Add
+    For scenario = 1 To 4
+        ws.AutoFilterMode = False: ws.Cells.Clear: ws.Rows("1:20").Hidden = False
+        ws.Range("A1").Value2 = "Group": ws.Range("B1").Value2 = "Qty"
+        ws.Range("C1").Value2 = "Piece": ws.Range("D1").Value2 = "Formula"
+        ws.Range("A2").Value2 = "YES": ws.Range("B2").Value2 = 2
+        ws.Range("A3").Value2 = "NO": ws.Range("B3").Value2 = 4
+        ws.Range("A4").Value2 = "YES": ws.Range("B4").Value2 = 3
+        ws.Range("D2:D4").FormulaR1C1 = "=RC[-2]*10"
+        ws.Range("A1:D4").AutoFilter Field:=1, Criteria1:=Array("YES"), Operator:=xlFilterValues
+        If scenario <> 4 Then ws.Range("A1:D4").AutoFilter Field:=2, Criteria1:=">=2", Operator:=xlAnd, Criteria2:="<=4"
+        If scenario = 3 Then
+            ws.Range("B2").Value2 = 0
+            On Error Resume Next
+            n = SplitRows(ws, 2, "B", "C", True)
+            e = Err.Number: Err.Clear
+            On Error GoTo 0
+            AssertTrue e <> 0, "Filtrowane rozbijanie: walidacja przed zmianami"
+            AssertTrue ws.AutoFilter.Range.Rows.Count = 4 And ws.Rows(3).Hidden, "Filtr zachowany po bledzie walidacji"
+        Else
+            n = SplitRows(ws, 2, "B", "C", scenario <> 2)
+            If scenario <> 2 Then
+                AssertTrue n = 5, "Rozbijanie tylko widocznych pod filtrem"
+                AssertTrue ws.Range("A4").Value2 = "NO" And ws.Range("B4").Value2 = 4, "Odfiltrowana pozycja bez zmian"
+                AssertTrue ws.Range("C7").Value2 = 3 And ws.Range("D7").Formula = "=B7*10", "Ostatni filtrowany wiersz i formula"
+                AssertTrue ws.AutoFilter.Range.Address = "$A$1:$D$7", "Powiekszony zakres filtra"
+            Else
+                AssertTrue n = 9 And ws.Range("C7").Value2 = 4, "Rozbijanie wszystkich przy aktywnym filtrze"
+                AssertTrue ws.AutoFilter.Range.Address = "$A$1:$D$10", "Zakres filtra po rozbiciu wszystkich"
+            End If
+            If scenario = 4 Then
+                AssertTrue Not ws.Rows(2).Hidden And ws.Rows(4).Hidden And Not ws.Rows(7).Hidden, "Widocznosc po rozbiciu nieciaglych pozycji"
+                AssertTrue ws.AutoFilter.Filters(1).On, "Przywrocony filtr pozycji"
+            Else
+                AssertTrue ws.AutoFilter.Filters(1).On And ws.AutoFilter.Filters(2).On, "Przywrocone oba filtry"
+                AssertTrue ws.AutoFilter.Filters(2).Criteria1 = ">=2" And ws.AutoFilter.Filters(2).Criteria2 = "<=4", "Przywrocone kryteria AND"
+                AssertTrue ws.Rows(2).Hidden, "Filtr ilosci ponownie oceniony po zmianie na 1"
+            End If
+        End If
+    Next scenario
 End Sub

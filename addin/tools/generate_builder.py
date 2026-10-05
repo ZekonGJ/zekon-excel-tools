@@ -21,9 +21,9 @@ lines=['Attribute VB_Name = "ZekonBuilder"','Option Explicit','', '''Public Sub 
     root = Left$(CStr(selected), InStrRev(CStr(selected), "\\"))
     dest = Environ$("LOCALAPPDATA") & "\\ZekonTools"
     If Dir$(dest, vbDirectory) = "" Then MkDir dest
-    dest = dest & "\\1.0.0-rc2"
+    dest = dest & "\\1.0.0-rc2a"
     If Dir$(dest, vbDirectory) = "" Then MkDir dest
-    output = dest & "\\ZekonTools_1.0.0-rc2.xlam"
+    output = dest & "\\ZekonTools_1.0.0-rc2a.xlam"
     If Len(Dir$(output)) > 0 Then Err.Raise vbObjectError + 902, , "Dodatek juz istnieje. Nie nadpisano: " & output
     Application.EnableEvents = False: Application.ScreenUpdating = False
     ' Each release has a different filename; do not close the user's loaded add-in.
@@ -35,8 +35,8 @@ lines=['Attribute VB_Name = "ZekonBuilder"','Option Explicit','', '''Public Sub 
         Set part = parts.Add(1)
         part.Name = CStr(item)
         sourceCode = ReadUtf8(root & "src\\" & item & ".bas")
-        If CStr(item) = "modCore" Then sourceCode = Replace(sourceCode, "1.0.0-rc1a", "1.0.0-rc2")
-        If CStr(item) = "modCore" Then sourceCode = Replace(sourceCode, "1.0.0-rc1b", "1.0.0-rc2")
+        If CStr(item) = "modCore" Then sourceCode = Replace(sourceCode, "1.0.0-rc1a", "1.0.0-rc2a")
+        If CStr(item) = "modCore" Then sourceCode = Replace(sourceCode, "1.0.0-rc1b", "1.0.0-rc2a")
         part.CodeModule.AddFromString sourceCode
     Next item
     stage = "Tworzenie panelu"
@@ -53,7 +53,7 @@ lines=['Attribute VB_Name = "ZekonBuilder"','Option Explicit','', '''Public Sub 
     parts(wb.CodeName).CodeModule.AddFromString ReadUtf8(root & "src\\ThisWorkbook.vba")
     stage = "Kopiowanie logo"
     FileCopy root & "assets\\logo.bmp", dest & "\\logo.bmp"
-    wb.BuiltinDocumentProperties("Title") = "Narzedzia ZEKON 1.0.0-rc2"
+    wb.BuiltinDocumentProperties("Title") = "Narzedzia ZEKON 1.0.0-rc2a"
     wb.IsAddin = True
     stage = "Zapis XLAM"
     wb.SaveAs Filename:=output, FileFormat:=55
@@ -96,7 +96,7 @@ Bad:
     If created Then Name output As dest & "\\FAILED_" & Format$(Now, "yyyymmdd_hhnnss") & ".xlam"
     Application.EnableEvents = oldEvents: Application.ScreenUpdating = oldScreen
     On Error GoTo 0
-    MsgBox "Nie zakonczono budowania: " & errorText & vbCrLf & "Nie wlaczaj nieprzetestowanego pliku. Zachowaj ten komunikat diagnostyczny.", vbExclamation, "ZEKON 1.0.0-rc2"
+    MsgBox "Nie zakonczono budowania: " & errorText & vbCrLf & "Nie wlaczaj nieprzetestowanego pliku. Zachowaj ten komunikat diagnostyczny.", vbExclamation, "ZEKON 1.0.0-rc2a"
 End Sub
 
 Private Function ReadUtf8(ByVal path As String) As String

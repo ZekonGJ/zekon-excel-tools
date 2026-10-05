@@ -173,3 +173,8 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - Otrzymano rzeczywisty XLAM rc2 oraz raport PASS z Excela; logo zgodne bajtowo ze źródłem.
 - Włączenie budowania kompletnego instalatora po aktualizacji release-input na main.
 - Testy instalacji i aktualizacji na stanowisku użytkownika pozostają do wykonania; brak podpisu wydawcy.
+
+## 1.0.0-rc2a — 2026-10-05
+- Poprawka rozbijania przy AutoFilter: wybór pozycji przed wyłączeniem filtra, kopiowanie na ciągłym zakresie, odtworzenie kryteriów i rozszerzenie zakresu.
+- Próba odtworzenia filtra także po błędzie lub anulowaniu. Filtr ikon odrzucany przed modyfikacją.
+- Testy Excel: filtrowane nieciągłe pozycje, ostatni wiersz, wszystkie wiersze, dwa kryteria i błąd walidacji. Wymagany nowy raport PASS; stary XLAM rc2 nie jest wydaniem tej poprawki.

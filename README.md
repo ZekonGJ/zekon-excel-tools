@@ -2,7 +2,14 @@
 
 Projekt: https://github.com/ZekonGJ/zekon-excel-tools
 
-## Stan na 2026-10-05
+## Poprawka rozbijania z filtrem: 1.0.0-rc2a
+
+Źródła zawierają poprawkę kopiowania przy aktywnym filtrze. Pakiet developerski
+`support/ZEKON_BUDUJ_RC2A_B04.zip` buduje tę wersję i uruchamia nowe testy Excel.
+Nie wydano jeszcze EXE z tą poprawką: wymagany aktualny XLAM i raport PASS.
+Dotychczasowy EXE i release-input dotyczą rc2.
+
+## Stan rc2 na 2026-10-05
 
 Przeniesiono aktualne źródła VBA **1.0.0-rc2** i dodano kod natywnego instalatora
 **ZekonSetup.exe** oraz GitHub Actions. Nie jest to jeszcze zatwierdzone wydanie
