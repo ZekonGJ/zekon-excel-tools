@@ -21,7 +21,7 @@ public sealed class SetupWindow : Form
     private readonly string stateFile = Path.Combine(Package.Root, "installation.json");
     public SetupWindow()
     {
-        Text = "ZEKON - instalator / aktualizator 1.1.0"; Width = 610; Height = 425;
+        Text = "ZEKON - instalator / aktualizator 1.1.1"; Width = 610; Height = 425;
         StartPosition = FormStartPosition.CenterScreen; FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false;
         Font = new Font("Segoe UI", 10); BackColor = Color.White;
         var title = new Label { Text = "ZEKON | Narzedzia Excel", Font = new Font("Segoe UI", 22, FontStyle.Bold), ForeColor = Color.FromArgb(189,32,45), AutoSize = true, Location = new Point(24,24) };
@@ -32,9 +32,9 @@ public sealed class SetupWindow : Form
         var updates = new Button { Text = "Aktualizuj z pliku...", Location = new Point(274,205), Width = 250, Height = 42 };
         var remove = new Button { Text = "Odlacz dodatek", Location = new Point(274,265), Width = 250, Height = 34 };
         Controls.AddRange(new Control[] {install,rollback,updates,remove});
-        install.Click += (_,_) => Run(Install); rollback.Click += (_,_) => Run(Rollback);
+        install.Click += (_,_) => Run(Install, "Instalacja ukończona"); rollback.Click += (_,_) => Run(Rollback, "Przywrócono poprzednią wersję");
         updates.Click += (_,_) => SelectUpdate();
-        remove.Click += (_,_) => { if (MessageBox.Show("Odlaczyc dodatek ZEKON od Excela? Pliki i ustawienia pozostana.", "ZEKON", MessageBoxButtons.YesNo) == DialogResult.Yes) Run(Detach); };
+        remove.Click += (_,_) => { if (MessageBox.Show("Odlaczyc dodatek ZEKON od Excela? Pliki i ustawienia pozostana.", "ZEKON", MessageBoxButtons.YesNo) == DialogResult.Yes) Run(Detach, "Dodatek odłączony"); };
         FormClosing += (_,e) => { if (working) e.Cancel = true; };
         RefreshState();
     }
@@ -61,13 +61,23 @@ public sealed class SetupWindow : Form
         try { var s = State(); status.Text = s == null ? "Zapisz dokumenty i zamknij Excel.\nInstalacja dla biezacego uzytkownika, bez uprawnien administratora." : "Zainstalowana wersja: " + s.Current + "\nPrzed aktualizacja zapisz dokumenty i zamknij Excel."; rollback.Enabled = s?.Previous != null; }
         catch { status.Text = "Nie mozna odczytac stanu instalacji. Zachowaj plik installation.json do diagnostyki."; install.Enabled = false; rollback.Enabled = false; }
     }
-    private async void Run(Action action)
+    private async void Run(Action action, string successTitle = "Aktualizacja ukończona")
     {
         if (working) return;
         if (Process.GetProcessesByName("EXCEL").Length != 0) { MessageBox.Show("Zapisz dokumenty i zamknij wszystkie procesy Excel. Instalator nie zamyka ich automatycznie.","ZEKON"); return; }
         working = true; foreach (Control c in Controls) if (c is Button) c.Enabled = false;
         status.Text = "Trwa instalacja / aktualizacja. Prosze czekac...";
-        try { await Task.Run(action); status.Text = "Gotowe. Wersja dodatku: " + (State()?.Current ?? "odlaczony") + "\nUruchom Excel.\nKolejne paczki wczytasz przez Aktualizuj z pliku."; }
+        try
+        {
+            await Task.Run(action);
+            var current = State();
+            string details = current == null
+                ? "Dodatek ZEKON został odłączony od Excela. Pliki i ustawienia zostały zachowane."
+                : "Zainstalowana wersja dodatku: " + current.Current + "\nMożesz teraz uruchomić Excel.";
+            status.Text = successTitle + ".\n" + details;
+            MessageBox.Show(this, details, "ZEKON — " + successTitle,
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
         catch (Exception e)
         {
             Directory.CreateDirectory(Package.Root);

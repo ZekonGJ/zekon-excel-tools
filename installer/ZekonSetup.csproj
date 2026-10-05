@@ -4,7 +4,7 @@
     <UseWindowsForms>true</UseWindowsForms><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier><SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile><IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <Version>1.1.0</Version><AssemblyName>ZekonSetup</AssemblyName><ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>1.1.1</Version><AssemblyName>ZekonSetup</AssemblyName><ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup><EmbeddedResource Include="payload.zip" Condition="Exists('payload.zip')" LogicalName="Zekon.Payload" /></ItemGroup>
   <Target Name="RequirePayload" BeforeTargets="Publish" Condition="!Exists('payload.zip')">

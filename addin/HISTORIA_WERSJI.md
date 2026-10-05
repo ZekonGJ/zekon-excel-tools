@@ -189,3 +189,8 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - Rozdzielono numer aktualizatora od numeru dodatku. Dodatek pozostaje rc2a, bez zmian VBA.
 - Paczki zewnętrzne korzystają z tej samej kontroli manifestu, SHA256 i rejestracji z możliwością wycofania.
 - Pierwsze przejście wymaga wymiany starego EXE; potwierdzenie działania interfejsu na stanowisku Windows oczekiwane.
+
+## Aktualizator 1.1.1 — 2026-10-05
+- Wyraźne okno potwierdzenia po udanej aktualizacji/instalacji, z numerem zainstalowanego dodatku.
+- Osobne potwierdzenia przywrócenia wersji i odłączenia; błędy nie wyświetlają potwierdzenia sukcesu.
+- Dodatek rc2a i format .zekonupdate bez zmian.
