@@ -211,3 +211,7 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - Test tworzy nową instancję panelu, sprawdza etykietę i tytuł oraz podaje rzeczywisty tekst przy błędzie.
 - Dokładnej przyczyny niezgodności rc2b nie ustalono na podstawie samego zrzutu. Wymagany nowy natywny PASS.
 - Publiczna paczka online pozostaje rc2a; aktualizator 1.2.0 bez zmian.
+
+### Publikacja paczki rc2c — 2026-10-05
+- Otrzymano XLAM i natywny raport PASS z 11:23:04, w tym permanent version label. Wszystkie osiem modułów zgodne ze źródłami.
+- Katalog online wskazuje rc2c, numer wydania 5. Aktualizator 1.2.0 pozostaje bez zmian.

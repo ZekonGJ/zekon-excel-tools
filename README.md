@@ -2,27 +2,12 @@
 
 Projekt: https://github.com/ZekonGJ/zekon-excel-tools
 
-## Poprawka rozbijania z filtrem: 1.0.0-rc2a
+## Aktualny dodatek: 1.0.0-rc2c
 
-Źródła zawierają poprawkę kopiowania przy aktywnym filtrze. Pakiet developerski
-`support/ZEKON_BUDUJ_RC2A_B04.zip` buduje tę wersję i uruchamia nowe testy Excel.
-Otrzymano XLAM rc2a i raport PASS z 2026-10-05 10:36:21, w tym nowe testy
-rozbijania pod filtrem. Wszystkie 8 modułów zgodne ze źródłami; pakiet release-input
-zawiera rc2a. Instalator wymaga jeszcze sprawdzenia aktualizacji na stanowisku użytkownika.
-
-## Stan rc2 na 2026-10-05
-
-Przeniesiono aktualne źródła VBA **1.0.0-rc2** i dodano kod natywnego instalatora
-**ZekonSetup.exe** oraz GitHub Actions. Nie jest to jeszcze zatwierdzone wydanie
-produkcyjne. Otrzymano XLAM rc2 oraz raport PASS z natywnego Excela (2026-10-05 08:58:38).
-Instalator z tym dodatkiem wymaga jeszcze prób instalacji na stanowisku Windows/Excel.
-Dostarczony wcześniej XLAM rc1c nie jest używany jako zamiennik.
-
-Lokalnie wykonano testy Python blokujące wydanie niewłaściwych plików.
-Kompilacja C#, testy planu rejestracji oraz testy pakietu są zdefiniowane w CI.
-Testy interfejsu instalatora, wpisów rejestru i działania dodatku wymagają Windows
-z desktopowym Excelem. Zielone CI bez tych prób nie jest potwierdzeniem poprawnej
-instalacji na stanowisku produkcyjnym.
+Opublikowany XLAM zawiera wszystkie dotychczasowe poprawki, rozbijanie pod filtrem
+oraz stały napis wersji pobierany z APP_VERSION. Raport Excel z 2026-10-05 11:23:04
+potwierdza PASS, także test wersji panelu. Porównano wszystkie osiem modułów VBA
+z aktualnymi źródłami. Aktualizator online wskazuje rc2c (wydanie 5).
 
 ## Aktualizator 1.2.0 — pierwsza instalacja zawsze z aktualnego katalogu
 
@@ -32,9 +17,8 @@ z tego repozytorium, a następnie wskazaną wersją paczkę `.zekonupdate`.
 Nie zawiera wbudowanej starej wersji dodatku. Brak internetu lub błąd pobierania
 kończy operację komunikatem; nie powoduje instalacji starej wersji.
 
-Na 2026-10-05 katalog wskazuje **1.0.0-rc2a**, ze zweryfikowanym XLAM i raportem
-Excel PASS. Zmiany źródłowe rc2b są w trakcie przygotowania i nie są oferowane
-jako gotowa aktualizacja przed zbudowaniem i testem XLAM.
+Na 2026-10-05 katalog wskazuje **1.0.0-rc2c**, ze zweryfikowanym XLAM i raportem
+Excel PASS. Aktualizator 1.2.0 pobiera tę paczkę bez wymiany EXE.
 
 Po udanej operacji wyświetla się osobne okno potwierdzenia i numer dodatku.
 Numer jest też stale widoczny w aktualizatorze, również podczas pobierania.

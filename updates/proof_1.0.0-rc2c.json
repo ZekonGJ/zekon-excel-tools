@@ -1,0 +1,5 @@
+{
+  "XlamSha256": "E256C0CFD8FE9701C8AAD3AE41DB27CD22417CD03C0262A926C9D81CEA43983C",
+  "NativeExcelReport": "2026-10-05 11:23:04\nPASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label.\n",
+  "SourceComparison": "All eight native VBA modules compared with current source on 2026-10-05."
+}
