@@ -205,3 +205,9 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - Usunięto zależność instalacji od starego XLAM osadzonego w EXE; błędy sieci nie uruchamiają starej wersji.
 - Zachowano aktualizacje offline, potwierdzenia zakończenia i dodano stały numer zainstalowanego dodatku.
 - Katalog wskazuje przetestowane rc2a. rc2b oczekuje na natywny XLAM i PASS.
+
+## 1.0.0-rc2c / generator B06
+- Po zgłoszeniu niezgodności etykiety w teście rc2b zmieniono etykietę na jeden wiersz Wersja: APP_VERSION.
+- Test tworzy nową instancję panelu, sprawdza etykietę i tytuł oraz podaje rzeczywisty tekst przy błędzie.
+- Dokładnej przyczyny niezgodności rc2b nie ustalono na podstawie samego zrzutu. Wymagany nowy natywny PASS.
+- Publiczna paczka online pozostaje rc2a; aktualizator 1.2.0 bez zmian.

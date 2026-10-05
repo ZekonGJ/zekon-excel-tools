@@ -92,9 +92,7 @@ Public Function ZekonSelfTest() As String
     AssertTrue bt.AutoFilter.Range.Address(True, True, xlA1) = expectedFilter, "Zachowany zakres filtra: oczekiwany " & expectedFilter & ", otrzymany " & bt.AutoFilter.Range.Address(True, True, xlA1)
     AssertTrue Not bt.Rows(8).Hidden And bt.Rows(9).Hidden And Not bt.Rows(10).Hidden, "Filtr ukladu Lieferliste"
     wb.Close SaveChanges:=False: Set wb = Nothing
-    Load frmZekon
-    AssertTrue frmZekon.Controls("version").Caption = "Wersja dodatku" & vbLf & APP_VERSION, "Stala wersja panelu zgodna z kodem"
-    Unload frmZekon
+    TestPanelVersion
     Application.DisplayAlerts = oldAlerts
     ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label."
     Exit Function
@@ -208,4 +206,26 @@ Private Sub TestSplitWithFilter(ByVal wb As Workbook)
             End If
         End If
     Next scenario
+End Sub
+
+Private Sub TestPanelVersion()
+    Dim panel As frmZekon, actual As String, expected As String
+    Dim e As Long, message As String
+    On Error GoTo Bad
+    Set panel = New frmZekon
+    Load panel
+    expected = "Wersja: " & APP_VERSION
+    actual = CStr(panel.Controls("version").Caption)
+    AssertTrue StrComp(actual, expected, vbBinaryCompare) = 0, "Wersja panelu: oczekiwano [" & expected & "]; odczytano [" & Replace(Replace(actual, vbCr, "<CR>"), vbLf, "<LF>") & "]"
+    AssertTrue panel.Caption = "Narzedzia ZEKON | " & APP_VERSION, "Wersja paska tytulu"
+    Unload panel
+    Set panel = Nothing
+    Exit Sub
+Bad:
+    e = Err.Number: message = Err.Description
+    On Error Resume Next
+    If Not panel Is Nothing Then Unload panel
+    Set panel = Nothing
+    On Error GoTo 0
+    Err.Raise e, "TestPanelVersion", message
 End Sub
