@@ -1,0 +1,19 @@
+name: Check installer and release gates
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -v
+      - run: dotnet run --project installer.Tests/Installer.Tests.csproj --configuration Release
+      - run: dotnet build installer/ZekonSetup.csproj --configuration Release
+      # Building without a payload is a compile check only: never upload this exe.

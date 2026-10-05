@@ -1,0 +1,834 @@
+[
+  {
+    "type": "Forms.Label.1",
+    "name": "side",
+    "props": {
+      "Left": 0,
+      "Top": 0,
+      "Width": 184,
+      "Height": 598,
+      "Caption": "",
+      "ForeColor": 3877920,
+      "BackStyle": 1,
+      "BackColor": 3680798
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "logoBg",
+    "props": {
+      "Left": 16,
+      "Top": 18,
+      "Width": 152,
+      "Height": 99,
+      "Caption": "",
+      "ForeColor": 3877920,
+      "BackStyle": 1,
+      "BackColor": 16777215
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Image.1",
+    "name": "imgLogo",
+    "props": {
+      "Left": 24,
+      "Top": 23,
+      "Width": 136,
+      "Height": 84,
+      "BackColor": 16777215,
+      "BorderStyle": 0,
+      "PictureSizeMode": 3
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "sideTitle",
+    "props": {
+      "Left": 20,
+      "Top": 136,
+      "Width": 145,
+      "Height": 24,
+      "Caption": "NARZEDZIA ZEKON",
+      "ForeColor": 16777215,
+      "BackStyle": 0
+    },
+    "fontSize": 10,
+    "bold": true
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "sideSub",
+    "props": {
+      "Left": 20,
+      "Top": 157,
+      "Width": 146,
+      "Height": 30,
+      "Caption": "Twoj warsztat w Excelu",
+      "ForeColor": 13022889,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "nav1",
+    "props": {
+      "Left": 12,
+      "Top": 201,
+      "Width": 160,
+      "Height": 33,
+      "Caption": "Zaokraglanie",
+      "BackColor": 3680798,
+      "ForeColor": 16777215,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "nav2",
+    "props": {
+      "Left": 12,
+      "Top": 240,
+      "Width": 160,
+      "Height": 33,
+      "Caption": "Wyszukiwanie pozycji",
+      "BackColor": 3680798,
+      "ForeColor": 16777215,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "nav3",
+    "props": {
+      "Left": 12,
+      "Top": 279,
+      "Width": 160,
+      "Height": 33,
+      "Caption": "Rozbijanie na sztuki",
+      "BackColor": 3680798,
+      "ForeColor": 16777215,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "nav4",
+    "props": {
+      "Left": 12,
+      "Top": 318,
+      "Width": 160,
+      "Height": 33,
+      "Caption": "Eksport: malowanie",
+      "BackColor": 3680798,
+      "ForeColor": 16777215,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "nav5",
+    "props": {
+      "Left": 12,
+      "Top": 357,
+      "Width": 160,
+      "Height": 33,
+      "Caption": "Eksport: ocynk",
+      "BackColor": 3680798,
+      "ForeColor": 16777215,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "nav6",
+    "props": {
+      "Left": 12,
+      "Top": 396,
+      "Width": 160,
+      "Height": 33,
+      "Caption": "Sztuki + malowanie",
+      "BackColor": 3680798,
+      "ForeColor": 16777215,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "nav7",
+    "props": {
+      "Left": 12,
+      "Top": 435,
+      "Width": 160,
+      "Height": 33,
+      "Caption": "Sztuki + ocynk",
+      "BackColor": 3680798,
+      "ForeColor": 16777215,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "version",
+    "props": {
+      "Left": 20,
+      "Top": 530,
+      "Width": 155,
+      "Height": 30,
+      "Caption": "VBA / Windows Excel\n1.0.0-rc2",
+      "ForeColor": 13022889,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblTitle",
+    "props": {
+      "Left": 208,
+      "Top": 20,
+      "Width": 570,
+      "Height": 28,
+      "Caption": "Zaokraglanie",
+      "ForeColor": 3877920,
+      "BackStyle": 0
+    },
+    "fontSize": 20,
+    "bold": true
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblDetail",
+    "props": {
+      "Left": 208,
+      "Top": 56,
+      "Width": 570,
+      "Height": 37,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "bookLabel",
+    "props": {
+      "Left": 208,
+      "Top": 100,
+      "Width": 274,
+      "Height": 16,
+      "Caption": "SKOROSZYT",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": true
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "sheetLabel",
+    "props": {
+      "Left": 500,
+      "Top": 100,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "ARKUSZ",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": true
+  },
+  {
+    "type": "Forms.ComboBox.1",
+    "name": "cboBook",
+    "props": {
+      "Left": 208,
+      "Top": 119,
+      "Width": 276,
+      "Height": 25,
+      "Style": 2,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.ComboBox.1",
+    "name": "cboSheet",
+    "props": {
+      "Left": 500,
+      "Top": 119,
+      "Width": 276,
+      "Height": 25,
+      "Style": 2,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "firstLabel",
+    "props": {
+      "Left": 208,
+      "Top": 158,
+      "Width": 180,
+      "Height": 17,
+      "Caption": "Poczatek: AUTO lub wiersz",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtFirst",
+    "props": {
+      "Left": 208,
+      "Top": 178,
+      "Width": 100,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CheckBox.1",
+    "name": "chkVisible",
+    "props": {
+      "Left": 329,
+      "Top": 177,
+      "Width": 203,
+      "Height": 25,
+      "Caption": "Tylko widoczne wiersze",
+      "BackStyle": 0,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CheckBox.1",
+    "name": "chkCopy",
+    "props": {
+      "Left": 535,
+      "Top": 177,
+      "Width": 245,
+      "Height": 25,
+      "Caption": "Pracuj na kopii skoroszytu",
+      "BackStyle": 0,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP1",
+    "props": {
+      "Left": 208,
+      "Top": 220,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP1",
+    "props": {
+      "Left": 208,
+      "Top": 237,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP2",
+    "props": {
+      "Left": 500,
+      "Top": 220,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP2",
+    "props": {
+      "Left": 500,
+      "Top": 237,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP3",
+    "props": {
+      "Left": 208,
+      "Top": 266,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP3",
+    "props": {
+      "Left": 208,
+      "Top": 283,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP4",
+    "props": {
+      "Left": 500,
+      "Top": 266,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP4",
+    "props": {
+      "Left": 500,
+      "Top": 283,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP5",
+    "props": {
+      "Left": 208,
+      "Top": 312,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP5",
+    "props": {
+      "Left": 208,
+      "Top": 329,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP6",
+    "props": {
+      "Left": 500,
+      "Top": 312,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP6",
+    "props": {
+      "Left": 500,
+      "Top": 329,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP7",
+    "props": {
+      "Left": 208,
+      "Top": 358,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP7",
+    "props": {
+      "Left": 208,
+      "Top": 375,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP8",
+    "props": {
+      "Left": 500,
+      "Top": 358,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP8",
+    "props": {
+      "Left": 500,
+      "Top": 375,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP9",
+    "props": {
+      "Left": 208,
+      "Top": 404,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP9",
+    "props": {
+      "Left": 208,
+      "Top": 421,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblP10",
+    "props": {
+      "Left": 500,
+      "Top": 404,
+      "Width": 276,
+      "Height": 16,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtP10",
+    "props": {
+      "Left": 500,
+      "Top": 421,
+      "Width": 276,
+      "Height": 24,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CheckBox.1",
+    "name": "chkFormulas",
+    "props": {
+      "Left": 208,
+      "Top": 275,
+      "Width": 570,
+      "Height": 23,
+      "Caption": "Zastap rowniez formuly wartosciami (nieodwracalne)",
+      "BackStyle": 0,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "profileLabel",
+    "props": {
+      "Left": 208,
+      "Top": 462,
+      "Width": 165,
+      "Height": 16,
+      "Caption": "PROFIL USTAWIEN",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": true
+  },
+  {
+    "type": "Forms.TextBox.1",
+    "name": "txtProfile",
+    "props": {
+      "Left": 208,
+      "Top": 481,
+      "Width": 230,
+      "Height": 25,
+      "SpecialEffect": 0,
+      "BorderStyle": 1,
+      "BorderColor": 14669261,
+      "BackColor": 16777215,
+      "ForeColor": 3877920
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "cmdLoad",
+    "props": {
+      "Left": 452,
+      "Top": 481,
+      "Width": 108,
+      "Height": 25,
+      "Caption": "Wczytaj",
+      "BackColor": 16777215,
+      "ForeColor": 3877920,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "cmdSave",
+    "props": {
+      "Left": 570,
+      "Top": 481,
+      "Width": 108,
+      "Height": 25,
+      "Caption": "Zapisz profil",
+      "BackColor": 16777215,
+      "ForeColor": 3877920,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "lblStatus",
+    "props": {
+      "Left": 208,
+      "Top": 516,
+      "Width": 570,
+      "Height": 19,
+      "Caption": "",
+      "ForeColor": 8679523,
+      "BackStyle": 0
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "cmdClose",
+    "props": {
+      "Left": 208,
+      "Top": 543,
+      "Width": 115,
+      "Height": 28,
+      "Caption": "Zamknij",
+      "BackColor": 16777215,
+      "ForeColor": 3877920,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.CommandButton.1",
+    "name": "cmdRun",
+    "props": {
+      "Left": 589,
+      "Top": 539,
+      "Width": 187,
+      "Height": 34,
+      "Caption": "Uruchom operacje",
+      "BackColor": 2957501,
+      "ForeColor": 16777215,
+      "TakeFocusOnClick": true
+    },
+    "fontSize": 10,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "progressTrack",
+    "props": {
+      "Left": 208,
+      "Top": 535,
+      "Width": 568,
+      "Height": 3,
+      "Caption": "",
+      "BackStyle": 1,
+      "BackColor": 14669261
+    },
+    "fontSize": 9,
+    "bold": false
+  },
+  {
+    "type": "Forms.Label.1",
+    "name": "progressFill",
+    "props": {
+      "Left": 208,
+      "Top": 535,
+      "Width": 0,
+      "Height": 3,
+      "Caption": "",
+      "BackStyle": 1,
+      "BackColor": 2957501
+    },
+    "fontSize": 9,
+    "bold": false
+  }
+]

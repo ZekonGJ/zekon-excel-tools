@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/__pycache__/
+installer/payload.zip
+dist/
+*.pfx
+*.p12
+*.key

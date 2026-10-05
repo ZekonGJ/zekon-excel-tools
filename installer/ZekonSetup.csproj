@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier><SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile><IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <AssemblyName>ZekonSetup</AssemblyName><ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup><EmbeddedResource Include="payload.zip" Condition="Exists('payload.zip')" LogicalName="Zekon.Payload" /></ItemGroup>
+  <Target Name="RequirePayload" BeforeTargets="Publish" Condition="!Exists('payload.zip')">
+    <Error Text="Brak payload.zip. Przygotuj paczke z przetestowanym XLAM przez tools/package_release.py." />
+  </Target>
+</Project>
