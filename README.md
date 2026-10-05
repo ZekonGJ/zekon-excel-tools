@@ -6,7 +6,8 @@ Projekt: https://github.com/ZekonGJ/zekon-excel-tools
 
 Przeniesiono aktualne źródła VBA **1.0.0-rc2** i dodano kod natywnego instalatora
 **ZekonSetup.exe** oraz GitHub Actions. Nie jest to jeszcze zatwierdzone wydanie
-produkcyjne. Brakuje aktualnego, przetestowanego XLAM rc2 i jego raportu PASS.
+produkcyjne. Otrzymano XLAM rc2 oraz raport PASS z natywnego Excela (2026-10-05 08:58:38).
+Instalator z tym dodatkiem wymaga jeszcze prób instalacji na stanowisku Windows/Excel.
 Dostarczony wcześniej XLAM rc1c nie jest używany jako zamiennik.
 
 Lokalnie wykonano testy Python blokujące wydanie niewłaściwych plików.

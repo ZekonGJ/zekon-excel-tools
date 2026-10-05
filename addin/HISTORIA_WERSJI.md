@@ -168,3 +168,8 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - Wszystkie źródła i logo osadzone; brak zależności od wcześniej rozpakowanego folderu.
 - Osobny folder każdej próby, bez nadpisywania istniejących dodatków; otwarcie folderu po PASS.
 - Kod funkcjonalny dodatku pozostaje 1.0.0-rc2. Sprawdzono odtworzenie źródeł i logo oraz limity długości wierszy; uruchomienie Excel wymaga testu natywnego.
+
+## Pakiet instalatora rc2 — 2026-10-05
+- Otrzymano rzeczywisty XLAM rc2 oraz raport PASS z Excela; logo zgodne bajtowo ze źródłem.
+- Włączenie budowania kompletnego instalatora po aktualizacji release-input na main.
+- Testy instalacji i aktualizacji na stanowisku użytkownika pozostają do wykonania; brak podpisu wydawcy.
