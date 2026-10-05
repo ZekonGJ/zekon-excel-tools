@@ -24,24 +24,28 @@ Testy interfejsu instalatora, wpisów rejestru i działania dodatku wymagają Wi
 z desktopowym Excelem. Zielone CI bez tych prób nie jest potwierdzeniem poprawnej
 instalacji na stanowisku produkcyjnym.
 
-## Praca użytkownika po zatwierdzeniu wydania
+## Aktualizator 1.1.0 i osobne paczki dodatku
 
-1. Zapisz dokumenty i zamknij Excel.
-2. Pobierz `ZekonSetup.exe` z firmowego wydania i uruchom.
-3. Kliknij **Zainstaluj / Aktualizuj** i otwórz Excel.
+Jednorazowo pobierz nowy ZekonSetup.exe (aktualizator 1.1.0). Dotychczasowy EXE
+nie ma obsługi zewnętrznych paczek. Zachowaj nowy program w stałym miejscu.
+Numer programu aktualizującego i numer dodatku są niezależne.
 
-Kolejne wersje instaluje się tym samym sposobem. W menu Start powstaje skrót
-**ZEKON → Aktualizacje ZEKON** do ostatniego stabilnego wydania GitHub.
-Można też rozesłać jeden EXE wszystkim stanowiskom — instalacja działa offline.
-W repozytorium prywatnym do pobierania z GitHub potrzebne jest uprawnione konto;
-instalator nie zapisuje tokenów GitHub i nie udostępnia prywatnego kodu publicznie.
-Nie ma automatycznego pobierania ani instalowania w tle.
+Kolejne aktualizacje dodatku:
+1. Pobierz mały plik `ZekonTools_<wersja>.zekonupdate`. Nie rozpakowuj go.
+2. Zapisz dokumenty i zamknij Excel.
+3. Uruchom zachowany `ZekonSetup.exe`, wybierz **Aktualizuj z pliku...** i wskaż paczkę.
+4. Otwórz Excel i sprawdź numer wersji w panelu ZEKON.
 
-Instalator jest samodzielną aplikacją .NET 10 dla Windows x64, również dla
-32-bitowego Excela na 64-bitowym Windows. Nie wymaga osobnej instalacji .NET,
-PowerShella, dostępu do projektu VBA ani interfejsu Office Interop/Excel COM.
-Rejestruje gotowy XLAM we wpisach startowych Excela dla bieżącego użytkownika.
-Nie ustawia zaufanych lokalizacji, nie wyłącza ochrony makr i nie zmienia polityk IT.
+Przycisk **Zainstaluj dołączony dodatek** instaluje wersję wbudowaną w EXE;
+nie służy do wczytywania kolejnych aktualizacji. Nowe EXE jest potrzebne tylko
+przy zmianie samego aktualizatora lub formatu paczek, nie przy zwykłej poprawce VBA.
+Plik aktualizacji można przekazać na inne stanowiska i zastosować offline.
+Paczka zawiera XLAM, logo oraz manifest z numerem i sumami kontrolnymi. Jest
+sprawdzana tym samym mechanizmem co pakiet wbudowany. Sumy kontrolne wykrywają
+uszkodzenia, nie zastępują podpisu wydawcy. Pobieraj paczki z firmowego źródła.
+
+Program działa na Windows x64, również przy 32-bitowym Excelu. Nie wymaga
+PowerShella ani osobnego instalowania .NET. Nie zmienia zabezpieczeń makr.
 
 ## Aktualizacja i wycofanie
 

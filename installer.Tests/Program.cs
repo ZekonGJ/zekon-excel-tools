@@ -26,15 +26,21 @@ static MemoryStream MakePackage(bool corrupt = false, bool extra = false)
     }
     stream.Position=0; return stream;
 }
+foreach (var transport in new[] {"embedded", "external-file"})
 foreach (var mode in new[] {"valid","tampered","extra"})
 {
     string stage = Path.Combine(Path.GetTempPath(), "zekon-test-" + Guid.NewGuid());
+    string updateFile = stage + ".zekonupdate";
     try
     {
-        using var payload = MakePackage(mode=="tampered",mode=="extra");
+        using var generated = MakePackage(mode=="tampered",mode=="extra");
+        if (transport == "external-file") File.WriteAllBytes(updateFile, generated.ToArray());
+        using Stream payload = transport == "external-file"
+            ? new FileStream(updateFile, FileMode.Open, FileAccess.Read, FileShare.Read)
+            : generated;
         try { Package.Extract(payload,stage); Check(mode=="valid","Invalid package accepted"); }
         catch (InvalidDataException) { Check(mode!="valid","Valid package rejected"); }
     }
-    finally { if(Directory.Exists(stage)) Directory.Delete(stage,true); }
+    finally { if(Directory.Exists(stage)) Directory.Delete(stage,true); if(File.Exists(updateFile)) File.Delete(updateFile); }
 }
-Console.WriteLine("PASS: registration plan, ownership boundaries, traversal, hash validation, payload allowlist.");
+Console.WriteLine("PASS: registration plan, ownership boundaries, traversal, hash validation, payload allowlist for embedded and external update files.");

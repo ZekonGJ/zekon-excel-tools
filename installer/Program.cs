@@ -15,13 +15,13 @@ internal static class Program
 public sealed class SetupWindow : Form
 {
     private readonly Label status = new() { AutoSize = false, Width = 540, Height = 110 };
-    private readonly Button install = new() { Text = "Zainstaluj / Aktualizuj", Width = 220, Height = 42 };
+    private readonly Button install = new() { Text = "Zainstaluj dolaczony dodatek", Width = 235, Height = 42 };
     private readonly Button rollback = new() { Text = "Przywroc poprzednia wersje", Width = 220, Height = 34 };
     private bool working;
     private readonly string stateFile = Path.Combine(Package.Root, "installation.json");
     public SetupWindow()
     {
-        Text = "Instalator Narzedzi ZEKON"; Width = 610; Height = 425;
+        Text = "ZEKON - instalator / aktualizator 1.1.0"; Width = 610; Height = 425;
         StartPosition = FormStartPosition.CenterScreen; FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false;
         Font = new Font("Segoe UI", 10); BackColor = Color.White;
         var title = new Label { Text = "ZEKON | Narzedzia Excel", Font = new Font("Segoe UI", 22, FontStyle.Bold), ForeColor = Color.FromArgb(189,32,45), AutoSize = true, Location = new Point(24,24) };
@@ -29,14 +29,31 @@ public sealed class SetupWindow : Form
         status.Location = new Point(26,85); Controls.Add(status);
         install.Location = new Point(26,205); install.BackColor = Color.FromArgb(189,32,45); install.ForeColor = Color.White;
         rollback.Location = new Point(26,265);
-        var updates = new Button { Text = "Sprawdz aktualizacje", Location = new Point(274,205), Width = 250, Height = 42 };
+        var updates = new Button { Text = "Aktualizuj z pliku...", Location = new Point(274,205), Width = 250, Height = 42 };
         var remove = new Button { Text = "Odlacz dodatek", Location = new Point(274,265), Width = 250, Height = 34 };
         Controls.AddRange(new Control[] {install,rollback,updates,remove});
         install.Click += (_,_) => Run(Install); rollback.Click += (_,_) => Run(Rollback);
-        updates.Click += (_,_) => Process.Start(new ProcessStartInfo(Package.ReleasesUrl) {UseShellExecute=true});
+        updates.Click += (_,_) => SelectUpdate();
         remove.Click += (_,_) => { if (MessageBox.Show("Odlaczyc dodatek ZEKON od Excela? Pliki i ustawienia pozostana.", "ZEKON", MessageBoxButtons.YesNo) == DialogResult.Yes) Run(Detach); };
         FormClosing += (_,e) => { if (working) e.Cancel = true; };
         RefreshState();
+    }
+    private void SelectUpdate()
+    {
+        if (working) return;
+        using var dialog = new OpenFileDialog
+        {
+            Title = "Wybierz paczke aktualizacji ZEKON",
+            Filter = "Aktualizacja ZEKON (*.zekonupdate)|*.zekonupdate",
+            CheckFileExists = true, Multiselect = false
+        };
+        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        string path = dialog.FileName;
+        Run(() =>
+        {
+            using var payload = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            InstallPayload(payload);
+        });
     }
     private InstallState? State() => File.Exists(stateFile) ? JsonSerializer.Deserialize<InstallState>(File.ReadAllText(stateFile)) : null;
     private void RefreshState()
@@ -50,7 +67,7 @@ public sealed class SetupWindow : Form
         if (Process.GetProcessesByName("EXCEL").Length != 0) { MessageBox.Show("Zapisz dokumenty i zamknij wszystkie procesy Excel. Instalator nie zamyka ich automatycznie.","ZEKON"); return; }
         working = true; foreach (Control c in Controls) if (c is Button) c.Enabled = false;
         status.Text = "Trwa instalacja / aktualizacja. Prosze czekac...";
-        try { await Task.Run(action); status.Text = "Gotowe. Uruchom Excel.\nWersja dodatku jest widoczna w jego panelu.\nZabezpieczenia makr i polityki firmy pozostaly bez zmian."; }
+        try { await Task.Run(action); status.Text = "Gotowe. Wersja dodatku: " + (State()?.Current ?? "odlaczony") + "\nUruchom Excel.\nKolejne paczki wczytasz przez Aktualizuj z pliku."; }
         catch (Exception e)
         {
             Directory.CreateDirectory(Package.Root);
@@ -71,13 +88,17 @@ public sealed class SetupWindow : Form
     private void Install()
     {
         using var payload = Assembly.GetExecutingAssembly().GetManifestResourceStream("Zekon.Payload") ?? throw new InvalidDataException("Ten plik nie zawiera przetestowanego dodatku. Pobierz kompletne wydanie.");
+        InstallPayload(payload);
+    }
+    private void InstallPayload(Stream payload)
+    {
         Directory.CreateDirectory(Package.Root);
         string stage = Path.Combine(Package.Root, "staging-" + Guid.NewGuid().ToString("N"));
         try
         {
             var manifest = Package.Extract(payload, stage);
             var previous = State();
-            if (previous != null && Package.VerifyInstalled(previous.Current).ReleaseNumber > manifest.ReleaseNumber) throw new InvalidOperationException("To starszy instalator. Do powrotu uzyj Przywroc poprzednia wersje.");
+            if (previous != null && Package.VerifyInstalled(previous.Current).ReleaseNumber > manifest.ReleaseNumber) throw new InvalidOperationException("To starsza wersja dodatku. Do powrotu uzyj Przywroc poprzednia wersje.");
             string destination = Package.ReleaseFolder(manifest.Version);
             if (Directory.Exists(destination))
             {

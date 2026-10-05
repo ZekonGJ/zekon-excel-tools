@@ -183,3 +183,9 @@ Nie potwierdzono jeszcze kompilacji Windows ani instalacji w Excelu.
 - 2026-10-05 10:36:21: natywne testy Excel PASS, w tym filtrowane rozbijanie.
 - Otrzymany XLAM zweryfikowany względem wszystkich 8 modułów źródłowych.
 - Instalator zawiera rc2a; brak podpisu wydawcy, test aktualizacji stanowiska pozostaje do potwierdzenia.
+
+## Aktualizator 1.1.0 — 2026-10-05
+- Dodano przycisk Aktualizuj z pliku i osobne paczki .zekonupdate; przyszłe poprawki VBA nie wymagają nowego EXE.
+- Rozdzielono numer aktualizatora od numeru dodatku. Dodatek pozostaje rc2a, bez zmian VBA.
+- Paczki zewnętrzne korzystają z tej samej kontroli manifestu, SHA256 i rejestracji z możliwością wycofania.
+- Pierwsze przejście wymaga wymiany starego EXE; potwierdzenie działania interfejsu na stanowisku Windows oczekiwane.

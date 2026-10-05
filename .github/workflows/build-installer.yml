@@ -2,7 +2,7 @@ name: Build complete ZekonSetup
 on:
   push:
     branches: [main]
-    paths: ["release-input/**", ".github/workflows/build-installer.yml"]
+    paths: ["release-input/**", "installer/**", ".github/workflows/build-installer.yml"]
   workflow_dispatch:
     inputs:
       version:
@@ -34,6 +34,10 @@ jobs:
           RELEASE_NUMBER: ${{ inputs.release_number || '3' }}
         run: python tools/package_release.py --version "$env:RELEASE_VERSION" --release-number "$env:RELEASE_NUMBER"
       - run: dotnet publish installer/ZekonSetup.csproj --configuration Release --output dist
+      - name: Export standalone update package
+        env:
+          RELEASE_VERSION: ${{ inputs.version || '1.0.0-rc2a' }}
+        run: Copy-Item installer/payload.zip "dist/ZekonTools_$env:RELEASE_VERSION.zekonupdate"
       - name: Installer checksum
         run: '(Get-FileHash dist/ZekonSetup.exe -Algorithm SHA256).Hash + "  ZekonSetup.exe" | Set-Content dist/SHA256.txt'
       - uses: actions/upload-artifact@v4
@@ -42,5 +46,10 @@ jobs:
           path: |
             dist/ZekonSetup.exe
             dist/SHA256.txt
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Zekon-addon-update
+          path: dist/*.zekonupdate
           if-no-files-found: error
       # No automatic public release: native Windows/Excel install tests and signing first.
