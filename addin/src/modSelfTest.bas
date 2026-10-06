@@ -14,6 +14,7 @@ Public Function ZekonSelfTest() As String
     TestAutoStart wb
     TestSplitWithFilter wb
     TestWorkLifecycle
+    TestZincExports
     ws.Name = "Test"
     ws.Range("F2").Value2 = 2.5: ws.Range("F3").Formula = "=2.5"
     ws.Range("F4").Value2 = -2.5: ws.Rows(4).Hidden = True
@@ -94,7 +95,7 @@ Public Function ZekonSelfTest() As String
     wb.Close SaveChanges:=False: Set wb = Nothing
     TestPanelVersion
     Application.DisplayAlerts = oldAlerts
-    ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label."
+    ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label, zinc template, zinc xls roundtrip, zinc split export, zinc no overwrite, zinc row limit."
     Exit Function
 Bad:
     e = Err.Number: message = Err.Description
@@ -107,6 +108,121 @@ Bad:
     On Error GoTo 0
     Err.Raise e, "ZekonSelfTest", message
 End Function
+
+Private Sub TestZincExports()
+    Dim source As Workbook, ws As Worksheet, reference As Workbook, result As Workbook
+    Dim folder As String, target As String, p(1 To 10) As Variant, n As Long, index As Long
+    Dim number As Long, message As String, caught As Long, sizeBefore As Long
+    On Error GoTo Bad
+    folder = Environ$("TEMP") & "\ZekonExportTest_" & Format$(Now, "yyyymmdd_hhnnss")
+    Do While Len(Dir$(folder & "_" & CStr(index), vbDirectory)) > 0
+        index = index + 1
+    Loop
+    folder = folder & "_" & CStr(index)
+    MkDir folder: MkDir folder & "\direct": MkDir folder & "\split"
+    WriteZincTemplate folder & "\reference.xls"
+    Set reference = Workbooks.Open(Filename:=folder & "\reference.xls", UpdateLinks:=0, ReadOnly:=True)
+    AssertTrue reference.FileFormat = xlExcel8, "Wzorzec BIFF8 / Excel 97-2003"
+    AssertTrue Application.CountA(reference.Worksheets(1).UsedRange) = 8, "Wzorzec bez danych klienta"
+    Set source = Workbooks.Add(xlWBATWorksheet): Set ws = source.Worksheets(1)
+    ws.Range("A1").Value2 = "Kontrakt": ws.Range("B1").Value2 = "Pozycja"
+    ws.Range("C1").Value2 = "Profil": ws.Range("D1").Value2 = "Dlugosc"
+    ws.Range("E1").Value2 = "Waga": ws.Range("F1").Value2 = "Sztuka"
+    ws.Range("G1").Value2 = "Ilosc": ws.Range("H1").Value2 = "Grupa"
+    ws.Range("A2:B3").NumberFormat = "@"
+    ws.Range("A2:A3").Value2 = "00123": ws.Range("B2:B3").Value2 = "0007"
+    ws.Range("C2:C3").Value2 = "HEA100": ws.Range("D2:D3").Value2 = 1200.5
+    ws.Range("E2:E3").Value2 = 2.5: ws.Range("F2:F3").Value2 = 7
+    ws.Range("G2").Value2 = 2: ws.Range("G3").Value2 = 4
+    ws.Range("H2").Value2 = "YES": ws.Range("H3").Value2 = "NO"
+    ws.Range("A1:H3").AutoFilter Field:=8, Criteria1:="YES"
+    p(1) = "=2+2": p(2) = "A": p(3) = "B": p(4) = "C"
+    p(5) = "D": p(6) = "E": p(7) = "F": p(8) = "99": p(9) = "G"
+    target = folder & "\direct\wzor.xls"
+    n = ExportRows(ws, 2, p, True, False, target)
+    Set result = ActiveWorkbook
+    AssertTrue n = 1, "Ocynk: tylko widoczne pozycje"
+    result.Close SaveChanges:=False: Set result = Nothing
+    Set result = Workbooks.Open(Filename:=target, UpdateLinks:=0, ReadOnly:=True)
+    AssertZincLayout result, reference, 1
+    AssertTrue result.Worksheets(1).Range("G2").Value2 = 7, "Ocynk: zachowany numer sztuki"
+    result.Close SaveChanges:=False: Set result = Nothing
+    sizeBefore = FileLen(target)
+    On Error Resume Next
+    n = ExportRows(ws, 2, p, True, False, target)
+    caught = Err.Number: Err.Clear
+    On Error GoTo Bad
+    AssertTrue caught <> 0 And FileLen(target) = sizeBefore, "Ocynk: brak nadpisania istniejacego pliku"
+    ws.Range("G2").Value2 = 65536: caught = 0
+    On Error Resume Next
+    ValidateZincExportSize ws, 2, p, True, True
+    caught = Err.Number: Err.Clear
+    On Error GoTo Bad
+    AssertTrue caught <> 0 And ws.Range("G2").Value2 = 65536, "Ocynk: limit XLS przed rozbiciem"
+    ws.Range("G2").Value2 = 2
+    ValidateZincExportSize ws, 2, p, True, True
+    n = SplitRows(ws, 2, "G", "F", True)
+    ws.Calculate
+    target = folder & "\split\wzor.xls"
+    n = ExportRows(ws, 2, p, True, False, target)
+    Set result = ActiveWorkbook
+    AssertTrue n = 2, "Sztuki + ocynk: liczba po rozbiciu pod filtrem"
+    result.Close SaveChanges:=False: Set result = Nothing
+    Set result = Workbooks.Open(Filename:=target, UpdateLinks:=0, ReadOnly:=True)
+    AssertZincLayout result, reference, 2
+    AssertTrue result.Worksheets(1).Range("G2").Value2 = 1 And result.Worksheets(1).Range("G3").Value2 = 2, "Sztuki + ocynk: numeracja w XLS"
+    result.Close SaveChanges:=False: Set result = Nothing
+    reference.Close SaveChanges:=False: Set reference = Nothing
+    source.Close SaveChanges:=False: Set source = Nothing
+    Kill folder & "\direct\wzor.xls": Kill folder & "\split\wzor.xls": Kill folder & "\reference.xls"
+    RmDir folder & "\direct": RmDir folder & "\split": RmDir folder
+    Exit Sub
+Bad:
+    number = Err.Number: message = Err.Description
+    On Error Resume Next
+    If Not result Is Nothing Then result.Close SaveChanges:=False
+    If Not reference Is Nothing Then reference.Close SaveChanges:=False
+    If Not source Is Nothing Then source.Close SaveChanges:=False
+    On Error GoTo 0
+    Err.Raise number, "TestZincExports", message & " | Pliki diagnostyczne: " & folder
+End Sub
+
+Private Sub AssertZincLayout(ByVal result As Workbook, ByVal reference As Workbook, ByVal count As Long)
+    Dim ws As Worksheet, expected As Worksheet, i As Long, c As Long
+    Dim headings As Variant
+    headings = Array("Auf. Name", "Auftr.", "Pos.", "Profil", "Lange", "Gewicht", "Lfn nr.", "Zekon Unterlieferanten")
+    AssertTrue result.Name = "wzor.xls" And result.FileFormat = xlExcel8, "Nazwa wzor.xls i rzeczywisty format XLS"
+    AssertTrue result.Worksheets.Count = 3, "Trzy arkusze wzorca"
+    AssertTrue Not result.HasVBProject, "Eksport bez makr"
+    For i = 1 To 3
+        Set ws = result.Worksheets(i): Set expected = reference.Worksheets(i)
+        AssertTrue ws.Name = "Arkusz" & CStr(i), "Nazwy arkuszy wzorca"
+        AssertTrue ws.StandardHeight = expected.StandardHeight, "Domyslna wysokosc wierszy"
+        For c = 1 To 10
+            AssertTrue Abs(ws.Columns(c).ColumnWidth - expected.Columns(c).ColumnWidth) < 0.01, "Szerokosc kolumny " & c
+        Next c
+        AssertTrue Abs(ws.PageSetup.LeftMargin - expected.PageSetup.LeftMargin) < 0.01, "Lewy margines wzorca"
+        AssertTrue Abs(ws.PageSetup.RightMargin - expected.PageSetup.RightMargin) < 0.01, "Prawy margines wzorca"
+        If i > 1 Then AssertTrue Application.CountA(ws.UsedRange) = 0, "Puste arkusze pomocnicze"
+    Next i
+    Set ws = result.Worksheets(1): Set expected = reference.Worksheets(1)
+    For c = 1 To 8
+        AssertTrue ws.Cells(1, c).Value2 = headings(c - 1), "Naglowek " & c
+        AssertTrue ws.Cells(1, c).NumberFormat = "General" And ws.Cells(2, c).NumberFormat = "General", "Format Ogolny " & c
+        AssertTrue ws.Cells(1, c).Font.Name = "Calibri" And ws.Cells(2, c).Font.Name = "Calibri", "Czcionka Calibri " & c
+        AssertTrue ws.Cells(1, c).Font.Size = 11 And ws.Cells(2, c).Font.Size = 11, "Rozmiar czcionki " & c
+        AssertTrue Not ws.Cells(1, c).Font.Bold And Not ws.Cells(2, c).Font.Bold, "Brak pogrubienia " & c
+        AssertTrue ws.Cells(1, c).Interior.Pattern = expected.Cells(1, c).Interior.Pattern, "Tlo naglowka " & c
+        AssertTrue ws.Cells(1, c).HorizontalAlignment = expected.Cells(1, c).HorizontalAlignment, "Wyrownanie naglowka " & c
+    Next c
+    AssertTrue ws.Rows(1).RowHeight = 14.5 And ws.Rows(2).RowHeight = 14.5, "Wysokosc 14.5 pkt"
+    AssertTrue ws.Range("A2").Value2 = "=2+2" And Not ws.Range("A2").HasFormula, "Nazwa kontraktu pozostaje tekstem"
+    AssertTrue ws.Range("B2").Value2 = "00123" And VarType(ws.Range("B2").Value2) = vbString, "Tekstowy kontrakt i zera wiodace po zapisie XLS"
+    AssertTrue ws.Range("C2").Value2 = "0007" And VarType(ws.Range("C2").Value2) = vbString, "Tekstowa pozycja i zera wiodace po zapisie XLS"
+    AssertTrue ws.Range("E2").Value2 = 1200.5 And ws.Range("F2").Value2 = 3, "Dlugosc i zaokraglona waga"
+    AssertTrue Application.CountA(ws.Columns(8)) = 1, "Kolumna podwykonawcy bez dopisywania danych"
+    AssertTrue LastRow(ws, 3) = count + 1, "Dane od drugiego wiersza bez pozostalosci wzorca"
+End Sub
 
 Private Sub TestAutoStart(ByVal wb As Workbook)
     Dim ws As Worksheet, lo As ListObject, n As Long, e As Long

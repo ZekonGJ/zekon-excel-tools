@@ -10,7 +10,7 @@ def package(xlam, report, version, number, output):
     if f'APP_VERSION As String = "{version}"' not in source:
         raise ValueError('Version does not match VBA source')
     text = report.read_text(encoding='utf-8-sig')
-    required = ('PASS:', 'block copy', 'batch rounding', 'cancellation', 'calculation restore', 'filtered split', 'filter criteria restore', 'permanent version label')
+    required = ('PASS:', 'block copy', 'batch rounding', 'cancellation', 'calculation restore', 'filtered split', 'filter criteria restore', 'permanent version label', 'zinc template', 'zinc xls roundtrip', 'zinc split export', 'zinc no overwrite', 'zinc row limit')
     if not all(marker in text for marker in required):
         raise ValueError('Missing full native rc2+ Excel PASS report; do not release an untested add-in')
     with zipfile.ZipFile(xlam) as book:
@@ -33,8 +33,8 @@ if __name__=='__main__':
     ap=argparse.ArgumentParser()
     ap.add_argument('--xlam',type=Path,default=ROOT/'release-input/ZekonTools.xlam')
     ap.add_argument('--report',type=Path,default=ROOT/'release-input/test-result.txt')
-    ap.add_argument('--version',default='1.0.0-rc2c')
-    ap.add_argument('--release-number',type=int,default=5)
+    ap.add_argument('--version',default='1.0.0-rc2d')
+    ap.add_argument('--release-number',type=int,default=6)
     ap.add_argument('--output',type=Path,default=ROOT/'installer/payload.zip')
     a=ap.parse_args()
     try: print(json.dumps(package(a.xlam,a.report,a.version,a.release_number,a.output),indent=2))

@@ -2,6 +2,28 @@
 
 Projekt: https://github.com/ZekonGJ/zekon-excel-tools
 
+## Przygotowywana poprawka: 1.0.0-rc2d — eksporty ocynku
+
+Status: źródła i testy przygotowane; wymagany natywny XLAM i raport Windows Excel.
+Katalog aktualizacji nadal wskazuje przetestowaną rc2c. Nie opublikowano rc2d.
+
+„Eksport: ocynk” i „Sztuki + ocynk” zapisują `wzor.xls` w wybranym folderze,
+w formacie Excel 97–2003 i układzie dostarczonego `wzor1.xls`. Wbudowany wzorzec
+zawiera tylko nagłówki: usunięto przykładowe dane i metadane dokumentu. Zachowano
+rekordy formatowania i ustawienia wydruku. Dane zaczynają się od wiersza 2.
+Kolumna H „Zekon Unterlieferanten” pozostaje pusta pod nagłówkiem.
+Istniejący `wzor.xls` nie jest nadpisywany. Przed rozbiciem sprawdzany jest limit
+65535 pozycji XLS. Oba eksporty malowania zachowują wcześniejsze zachowanie.
+
+Próba deweloperska B07: `support/ZEKON_BUDUJ_RC2D_B07.zip`, makro
+`ZEKON_BUDUJ_RC2D_B07`. Buduje nowy XLAM i uruchamia test zapisu oraz ponownego
+otwarcia `wzor.xls`, w tym sekwencji rozbijania pod filtrem. To narzędzie budowania
+jednego wydania, nie instalator stanowiskowy. Publikacja po PASS: wydanie 6,
+`ZekonTools_1.0.0-rc2d.zekonupdate`, bez wymiany aktualizatora 1.2.0.
+
+Zgłoszony alarm AVG dotyczący instalatora pozostaje niewyjaśniony. Ta poprawka
+eksportu nie jest weryfikacją bezpieczeństwa EXE ani rozwiązaniem tego alarmu.
+
 ## Aktualny dodatek: 1.0.0-rc2c
 
 Opublikowany XLAM zawiera wszystkie dotychczasowe poprawki, rozbijanie pod filtrem

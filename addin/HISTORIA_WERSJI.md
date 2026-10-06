@@ -4,6 +4,28 @@ Historia projektu, prowadzona na życzenie użytkownika od 2026-10-02.
 Opisy wcześniejszych wydań odtworzono z dostępnego kodu i przebiegu pracy.
 Nie stanowią deklaracji, że wszystkie wydania były poprawne lub przetestowane.
 
+## 1.0.0-rc2d — 2026-10-06 — przygotowana, nieopublikowana
+
+- Zakres: wyłącznie „Eksport: ocynk” i „Sztuki + ocynk”. Nazwa `wzor.xls`,
+  rzeczywisty BIFF8 / Excel 97–2003; dane od wiersza 2.
+- Wzorzec na podstawie przekazanego `wzor1.xls`: 8 nagłówków (w tym kropka
+  w „Lfn nr.” i „Zekon Unterlieferanten”), trzy arkusze, Calibri 11 bez
+  pogrubienia, format Ogólne, szerokości kolumn i ustawienia wydruku.
+- Wbudowany wzorzec XLS pozbawiono danych i metadanych użytkownika. Rekordy
+  czcionek, formatów, szerokości i ustawień strony zachowano z oryginału.
+- Identyfikatory zachowują tekst i zera wiodące pomimo formatu Ogólne.
+- Wybór folderu przed modyfikacją danych; anulowanie nie uruchamia sekwencji.
+  Istniejący wynik nie jest nadpisywany, sprawdzany jest limit wierszy XLS.
+- Numer wersji nadal pochodzi z APP_VERSION i jest stale widoczny w panelu.
+- Weryfikacja lokalna: osiem testów Python PASS, zgodność osadzonego wzorca
+  z plikiem, formaty i brak danych przykładowych, poprawność odnośników BIFF.
+  Przygotowano natywne testy obu eksportów z zapisem i ponownym otwarciem XLS.
+- NIE wykonano testów Windows Excel w tym środowisku. Publikację wydania 6
+  blokuje brak nowego XLAM i raportu PASS z nowymi testami. Online pozostaje rc2c.
+- Aktualizator EXE 1.2.0 pozostaje bez zmian. Nowy wzorzec jest osadzony w VBA,
+  więc paczka po natywnym teście nadal zawiera XLAM, logo i manifest, bez zmian
+  protokołu instalatora. Zgłoszenie AVG nie jest rozstrzygnięte tą poprawką.
+
 ## Zasady kolejnych aktualizacji
 
 - Przy każdej zmianie dostarczanego dodatku nadaj nowy numer wersji.

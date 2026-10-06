@@ -1,0 +1,20 @@
+{
+  "ReferenceSha256": "16d55e7dc6cf900298cd8c5feee03b0b553609ad5db330c1cd52f70dcdab7b09",
+  "TemplateSha256": "d82d260f23c0ac31eba21374870e654102daf80032e3c715756c691977473dba",
+  "SheetLayoutRecordSha256": [
+    "93bed356036ba10fd84d2dfbef196e1a9fca9857f1af7690704853ddf2e2cf97",
+    "d27eab7ce7562b912fd87cdc498cacebfa52df2a85a78d79d1c01781e1d7d683",
+    "d27eab7ce7562b912fd87cdc498cacebfa52df2a85a78d79d1c01781e1d7d683"
+  ],
+  "Headers": [
+    "Auf. Name",
+    "Auftr.",
+    "Pos.",
+    "Profil",
+    "Lange",
+    "Gewicht",
+    "Lfn nr.",
+    "Zekon Unterlieferanten"
+  ],
+  "Status": "Static comparison passed; native Excel open/save test still required."
+}
