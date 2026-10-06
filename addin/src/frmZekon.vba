@@ -74,6 +74,7 @@ Private Sub SelectMode(ByVal selected As Long)
                 If mode = 7 Then defaults = Array("", "B", "D", "M", "", "F", "C", "2", "E")
             End If
     End Select
+    If mode = 5 Or mode = 7 Then detail = detail & " Wynik: wzor.xls, uklad wzorca, Excel 97-2003."
     lblTitle.Caption = title
     lblDetail.Caption = detail
     For i = 1 To 10
@@ -148,7 +149,7 @@ Private Sub cmdRun_Click()
     Dim wb As Workbook, ws As Worksheet, working As Workbook, sheetName As String
     Dim first As Long, i As Long, n As Long, p(1 To 10) As Variant, dummy As Long
     Dim oldEvents As Boolean, oldScreen As Boolean, altered As Boolean, mutating As Boolean
-    Dim errorText As String, painting As Boolean, resultText As String
+    Dim errorText As String, painting As Boolean, resultText As String, exportPath As String
     On Error GoTo Bad
     If busy Then Exit Sub
     LastCopyPath = ""
@@ -157,6 +158,13 @@ Private Sub cmdRun_Click()
     For i = 1 To 10
         p(i) = Trim$(Me.Controls("txtP" & i).Text)
     Next i
+    If mode = 5 Or mode = 7 Then
+        exportPath = ChooseZincExportPath(wb)
+        If Len(exportPath) = 0 Then
+            lblStatus.Caption = "Anulowano wybor folderu. Dane nie zostaly zmienione."
+            Exit Sub
+        End If
+    End If
     busy = True
     SetWorkingControls True
     oldEvents = Application.EnableEvents: oldScreen = Application.ScreenUpdating
@@ -182,6 +190,7 @@ Private Sub cmdRun_Click()
         End If
     End If
     If mode = 2 Then ValidateSearch ws, first, p, chkVisible.Value
+    If mode = 5 Or mode = 7 Then ValidateZincExportSize ws, first, p, chkVisible.Value, mode = 7
     mutating = (mode <= 3 Or mode >= 6)
     If mutating And Not chkCopy.Value Then
         If MsgBox("Zmienisz dane w oryginale: " & wb.Name & " / " & ws.Name & vbCrLf & "Operacji VBA nie mozna cofnac przez Ctrl+Z. Kontynuowac?", vbYesNo + vbExclamation, "ZEKON") <> vbYes Then
@@ -199,12 +208,12 @@ Private Sub cmdRun_Click()
         Case 1: n = RoundColumn(ws, first, CStr(p(1)), chkVisible.Value, chkFormulas.Value)
         Case 2: n = SearchPositions(ws, first, p, chkVisible.Value)
         Case 3: n = SplitRows(ws, first, CStr(p(1)), CStr(p(2)), chkVisible.Value)
-        Case 4, 5: n = ExportRows(ws, first, p, chkVisible.Value, mode = 4)
+        Case 4, 5: n = ExportRows(ws, first, p, chkVisible.Value, mode = 4, exportPath)
         Case 6, 7
             n = SplitRows(ws, first, CStr(p(9)), CStr(p(7)), chkVisible.Value)
             ProgressTick "Przeliczanie danych do eksportu", 0, 0, True
             ws.Calculate
-            n = ExportRows(ws, first, p, chkVisible.Value, mode = 6)
+            n = ExportRows(ws, first, p, chkVisible.Value, mode = 6, exportPath)
     End Select
     If mode = 1 Or mode = 3 Then
         ws.Parent.Activate
@@ -215,7 +224,11 @@ Private Sub cmdRun_Click()
     altered = False: busy = False: SetWorkingControls False
     resultText = "Gotowe. Poczatek danych zrodlowych: wiersz " & first & ". "
     If mode = 2 Then resultText = resultText & "Brakujacych wystapien: " & n Else resultText = resultText & "Przetworzonych wierszy/komorek: " & n
-    resultText = resultText & vbCrLf & "Sprawdz wynik i zapisz go w wybranym miejscu."
+    If Len(exportPath) > 0 Then
+        resultText = resultText & vbCrLf & "Zapisano plik Excel 97-2003: " & exportPath
+    Else
+        resultText = resultText & vbCrLf & "Sprawdz wynik i zapisz go w wybranym miejscu."
+    End If
     If Len(LastCopyPath) > 0 Then resultText = resultText & vbCrLf & "Kopia robocza: " & LastCopyPath
     lblStatus.Caption = "Gotowe. Wynik jest otwarty w Excelu."
     MsgBox resultText, vbInformation, "ZEKON"
