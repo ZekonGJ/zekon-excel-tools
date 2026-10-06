@@ -4,7 +4,7 @@ Historia projektu, prowadzona na życzenie użytkownika od 2026-10-02.
 Opisy wcześniejszych wydań odtworzono z dostępnego kodu i przebiegu pracy.
 Nie stanowią deklaracji, że wszystkie wydania były poprawne lub przetestowane.
 
-## 1.0.0-rc2d — 2026-10-06 — przygotowana, nieopublikowana
+## 1.0.0-rc2d — 2026-10-06 — wydanie 6
 
 - Zakres: wyłącznie „Eksport: ocynk” i „Sztuki + ocynk”. Nazwa `wzor.xls`,
   rzeczywisty BIFF8 / Excel 97–2003; dane od wiersza 2.
@@ -20,8 +20,13 @@ Nie stanowią deklaracji, że wszystkie wydania były poprawne lub przetestowane
 - Weryfikacja lokalna: osiem testów Python PASS, zgodność osadzonego wzorca
   z plikiem, formaty i brak danych przykładowych, poprawność odnośników BIFF.
   Przygotowano natywne testy obu eksportów z zapisem i ponownym otwarciem XLS.
-- NIE wykonano testów Windows Excel w tym środowisku. Publikację wydania 6
-  blokuje brak nowego XLAM i raportu PASS z nowymi testami. Online pozostaje rc2c.
+- Użytkownik dostarczył natywny XLAM i raport Excel z 2026-10-06 11:57:37:
+  PASS, również zinc template, zinc xls roundtrip, zinc split export,
+  zinc no overwrite, zinc row limit. Dziewięć modułów VBA zgodnych ze źródłami;
+  logo identyczne, arkusz dodatku pusty. Testy Windows Excel wykonano na
+  komputerze użytkownika, nie w środowisku asystenta.
+- Opublikowano wydanie 6 przez istniejący katalog aktualizacji; sumy plików,
+  manifest i wersja pakietu zweryfikowane. Historia rc2c pozostaje dostępna.
 - Aktualizator EXE 1.2.0 pozostaje bez zmian. Nowy wzorzec jest osadzony w VBA,
   więc paczka po natywnym teście nadal zawiera XLAM, logo i manifest, bez zmian
   protokołu instalatora. Zgłoszenie AVG nie jest rozstrzygnięte tą poprawką.

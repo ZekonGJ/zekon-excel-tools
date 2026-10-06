@@ -2,10 +2,11 @@
 
 Projekt: https://github.com/ZekonGJ/zekon-excel-tools
 
-## Przygotowywana poprawka: 1.0.0-rc2d — eksporty ocynku
+## Aktualny dodatek: 1.0.0-rc2d — eksporty ocynku
 
-Status: źródła i testy przygotowane; wymagany natywny XLAM i raport Windows Excel.
-Katalog aktualizacji nadal wskazuje przetestowaną rc2c. Nie opublikowano rc2d.
+Natywny XLAM i raport Windows Excel z 2026-10-06 11:57:37 potwierdzają PASS,
+w tym nowe testy obu eksportów. Porównano wszystkie dziewięć modułów VBA
+z utrzymywanym kodem rc2d. Katalog aktualizacji wskazuje rc2d, wydanie 6.
 
 „Eksport: ocynk” i „Sztuki + ocynk” zapisują `wzor.xls` w wybranym folderze,
 w formacie Excel 97–2003 i układzie dostarczonego `wzor1.xls`. Wbudowany wzorzec
@@ -18,18 +19,18 @@ Istniejący `wzor.xls` nie jest nadpisywany. Przed rozbiciem sprawdzany jest lim
 Próba deweloperska B07: `support/ZEKON_BUDUJ_RC2D_B07.zip`, makro
 `ZEKON_BUDUJ_RC2D_B07`. Buduje nowy XLAM i uruchamia test zapisu oraz ponownego
 otwarcia `wzor.xls`, w tym sekwencji rozbijania pod filtrem. To narzędzie budowania
-jednego wydania, nie instalator stanowiskowy. Publikacja po PASS: wydanie 6,
+jednego wydania, nie instalator stanowiskowy. Opublikowana aktualizacja:
 `ZekonTools_1.0.0-rc2d.zekonupdate`, bez wymiany aktualizatora 1.2.0.
 
 Zgłoszony alarm AVG dotyczący instalatora pozostaje niewyjaśniony. Ta poprawka
 eksportu nie jest weryfikacją bezpieczeństwa EXE ani rozwiązaniem tego alarmu.
 
-## Aktualny dodatek: 1.0.0-rc2c
+## Poprzedni dodatek: 1.0.0-rc2c
 
 Opublikowany XLAM zawiera wszystkie dotychczasowe poprawki, rozbijanie pod filtrem
 oraz stały napis wersji pobierany z APP_VERSION. Raport Excel z 2026-10-05 11:23:04
 potwierdza PASS, także test wersji panelu. Porównano wszystkie osiem modułów VBA
-z aktualnymi źródłami. Aktualizator online wskazuje rc2c (wydanie 5).
+z ówczesnymi źródłami. Zachowano paczkę rc2c (wydanie 5) do powrotu.
 
 ## Aktualizator 1.2.0 — pierwsza instalacja zawsze z aktualnego katalogu
 
@@ -39,7 +40,7 @@ z tego repozytorium, a następnie wskazaną wersją paczkę `.zekonupdate`.
 Nie zawiera wbudowanej starej wersji dodatku. Brak internetu lub błąd pobierania
 kończy operację komunikatem; nie powoduje instalacji starej wersji.
 
-Na 2026-10-05 katalog wskazuje **1.0.0-rc2c**, ze zweryfikowanym XLAM i raportem
+Na 2026-10-06 katalog wskazuje **1.0.0-rc2d**, ze zweryfikowanym XLAM i raportem
 Excel PASS. Aktualizator 1.2.0 pobiera tę paczkę bez wymiany EXE.
 
 Po udanej operacji wyświetla się osobne okno potwierdzenia i numer dodatku.
