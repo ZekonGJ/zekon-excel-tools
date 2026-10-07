@@ -4,6 +4,35 @@ Historia projektu, prowadzona na życzenie użytkownika od 2026-10-02.
 Opisy wcześniejszych wydań odtworzono z dostępnego kodu i przebiegu pracy.
 Nie stanowią deklaracji, że wszystkie wydania były poprawne lub przetestowane.
 
+## 1.0.0-rc2e — 2026-10-07 — wydanie 7
+
+- Zgłoszenie: wyszukiwanie odmawia pracy z komunikatem „Skoroszyt jest tylko
+  do odczytu” mimo zaznaczonego „Pracuj na kopii”. Potwierdzona przyczyna:
+  ValidateSearch wymagał zapisu oryginału przed wykonaniem CopyWorkbook.
+- Preflight dopuszcza odczyt oryginału przy planowanej kopii. Po utworzeniu
+  kopii panel powtarza walidację z pełnym wymaganiem zapisu w kopii.
+- CopyWorkbook pomija zalecenie otwarcia tylko do odczytu i sprawdza wynik
+  otwarcia. Odziedziczony starszy tryb współdzielenia jest wyłączany wyłącznie
+  w nowym pliku roboczym, z kontrolą tożsamości skoroszytu i ścieżki.
+- Oryginał nie jest odblokowywany, zapisywany ani pozbawiany współdzielenia.
+  Ochrona arkuszy/struktury i ograniczenia zapisu nie są obchodzone.
+- Przy powodzeniu i błędzie przywracane są AutomationSecurity, EnableEvents
+  i DisplayAlerts; przy błędzie zamykana jest tylko nieprzygotowana kopia.
+- Dodano natywne testy wyszukiwania na kopii pliku ReadOnly i Shared Workbook,
+  kontroli niezmienności oryginału oraz zachowania ochrony. Wymagane w bramce
+  publikacji; stare raporty rc2d nie spełniają wymagań wydania 7.
+- Weryfikacja lokalna: 9 testów Python PASS i zgodność źródeł z próbą B08.
+- Użytkownik dostarczył natywny XLAM i raport Excel z 2026-10-07 07:43:59:
+  PASS całego zestawu, w tym readonly search copy, shared private copy,
+  copy source unchanged i copy protection preserved. Wszystkie dziewięć
+  modułów VBA zgodnych ze źródłami rc2e; logo identyczne, arkusz dodatku pusty.
+  Testy używają danych syntetycznych; wykonano je na komputerze użytkownika,
+  nie w środowisku asystenta ani na jego skoroszycie produkcyjnym.
+- Opublikowano wydanie 7 przez istniejący katalog aktualizacji. Manifest,
+  sumy plików i wersję paczki zweryfikowano; rc2d pozostaje do powrotu.
+  Instalator EXE 1.2.0 bez zmian; podpis i zgłoszenie AVG nadal nierozstrzygnięte.
+- Eksporty rc2d, wzorzec XLS oraz protokół aktualizatora pozostają bez zmian.
+
 ## 1.0.0-rc2d — 2026-10-06 — wydanie 6
 
 - Zakres: wyłącznie „Eksport: ocynk” i „Sztuki + ocynk”. Nazwa `wzor.xls`,

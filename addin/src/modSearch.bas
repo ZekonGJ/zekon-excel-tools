@@ -135,18 +135,18 @@ Private Sub MarkMissingBlock(ByVal cells As Range, ByVal formula As String)
     End With
 End Sub
 
-' Read-only validation: also called before creating a working copy.
-Public Sub ValidateSearch(ByVal ws As Worksheet, ByVal first As Long, ByVal p As Variant, ByVal visibleOnly As Boolean)
+' Preflight may read a read-only source when changes will target a separate copy.
+Public Sub ValidateSearch(ByVal ws As Worksheet, ByVal first As Long, ByVal p As Variant, ByVal visibleOnly As Boolean, Optional ByVal copyPlanned As Boolean = False)
     Dim bt As Worksheet, rg As Range, sc As Long, bc As Long, br As Long, r As Long
     Dim found As Boolean
-    EnsureWritable ws
+    EnsureSearchAccess ws, copyPlanned
     sc = ColumnNumber(ws, CStr(p(1)))
     On Error Resume Next
     Set bt = ws.Parent.Worksheets(CStr(p(2)))
     On Error GoTo 0
     If bt Is Nothing Then Fail "Nie znaleziono arkusza: " & CStr(p(2))
     If bt Is ws Then Fail "Wybierz rozne arkusze: lista pozycji i zestawienie."
-    EnsureWritable bt
+    EnsureSearchAccess bt, copyPlanned
     If ws.Parent.ProtectStructure Then Fail "Struktura skoroszytu jest chroniona."
     If bt.ListObjects.Count > 0 Then Fail "Wyszukiwanie wymaga zwyklego zakresu, nie tabeli Excela."
     If bt.Visible <> xlSheetVisible Then Fail "Arkusz zestawienia musi byc widoczny."
@@ -161,6 +161,15 @@ Public Sub ValidateSearch(ByVal ws As Worksheet, ByVal first As Long, ByVal p As
         End If
     Next r
     If Not found Then Fail "Lista pozycji jest pusta. Sprawdz arkusz listy, kolumne i opcje widocznych wierszy."
+End Sub
+
+Private Sub EnsureSearchAccess(ByVal ws As Worksheet, ByVal copyPlanned As Boolean)
+    If copyPlanned Then
+        ' Sheet protection survives SaveCopyAs; do not remove or ignore it.
+        If ws.ProtectContents Then Fail "Arkusz jest chroniony: " & ws.Name
+    Else
+        EnsureWritable ws
+    End If
 End Sub
 
 Private Function SearchFilterRange(ByVal bt As Worksheet, ByVal firstData As Long, ByVal positionCol As Long) As Range

@@ -189,7 +189,7 @@ Private Sub cmdRun_Click()
             If dummy = ColumnNumber(ws, CStr(p(7))) Then Fail "Ilosc i numer sztuki musza byc w roznych kolumnach."
         End If
     End If
-    If mode = 2 Then ValidateSearch ws, first, p, chkVisible.Value
+    If mode = 2 Then ValidateSearch ws, first, p, chkVisible.Value, chkCopy.Value
     If mode = 5 Or mode = 7 Then ValidateZincExportSize ws, first, p, chkVisible.Value, mode = 7
     mutating = (mode <= 3 Or mode >= 6)
     If mutating And Not chkCopy.Value Then
@@ -204,6 +204,8 @@ Private Sub cmdRun_Click()
         Set working = CopyWorkbook(wb)
         Set ws = working.Worksheets(sheetName)
     End If
+    ' The actual working workbook must be writable, even after successful preflight.
+    If mode = 2 Then ValidateSearch ws, first, p, chkVisible.Value
     Select Case mode
         Case 1: n = RoundColumn(ws, first, CStr(p(1)), chkVisible.Value, chkFormulas.Value)
         Case 2: n = SearchPositions(ws, first, p, chkVisible.Value)

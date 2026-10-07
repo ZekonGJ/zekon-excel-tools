@@ -2,11 +2,41 @@
 
 Projekt: https://github.com/ZekonGJ/zekon-excel-tools
 
-## Aktualny dodatek: 1.0.0-rc2d — eksporty ocynku
+## Aktualny dodatek: 1.0.0-rc2e — praca na kopii
+
+Potwierdzony błąd rc2d: panel wyszukiwania wywoływał ValidateSearch przed
+CopyWorkbook, a walidator bezwarunkowo wymagał zapisu w oryginale. Skoroszyt
+otwarty tylko do odczytu był odrzucany także przy zaznaczonej pracy na kopii.
+Nie wymaga to dowodu, że plik jest współdzielony — sam ReadOnly wystarczał.
+
+rc2e uwzględnia zaplanowaną kopię w walidacji wstępnej i ponownie sprawdza
+możliwość zapisu już w faktycznym skoroszycie roboczym. Kopia jest otwierana
+lokalnie z pominięciem jedynie zalecenia odczytu; jeśli nadal jest tylko do
+odczytu, praca zostaje zatrzymana z właściwym komunikatem. Jeśli odziedziczy
+starszy tryb Shared Workbook, jest przełączana na wyłączny dostęp dopiero po
+sprawdzeniu, że jest osobnym plikiem pod nową ścieżką. Oryginał nie jest
+przełączany ani zapisywany. Ochrona arkuszy i struktury pozostaje respektowana.
+
+Nowe testy natywne tworzą pliki tylko do odczytu i współdzielone, wykonują
+wyszukiwanie w kopii, sprawdzają filtr, raport, oznaczenia, formuły i zmianę
+wagi oraz niezmienność oryginału, także na poziomie bajtów. Wymagany raport
+PASS z markerami readonly search copy, shared private copy, copy source
+unchanged, copy protection preserved. Dotychczasowych testów nie usunięto.
+
+Natywny XLAM i raport z komputera użytkownika z 2026-10-07 07:43:59
+potwierdzają PASS całego zestawu, w tym nowych testów pracy na kopii.
+Porównano wszystkie dziewięć modułów VBA z utrzymywanymi źródłami rc2e;
+logo jest identyczne, arkusz dodatku pusty. Testy Windows Excel wykonano na
+komputerze użytkownika, nie w środowisku asystenta. Katalog aktualizacji
+wskazuje rc2e, wydanie 7. Instalator 1.2.0 pozostaje bez zmian.
+Próba deweloperska B08 pozostaje w `support/ZEKON_BUDUJ_RC2E_B08.zip`;
+instalacja na stanowiskach odbywa się przez dotychczasowy aktualizator.
+
+## Poprzedni dodatek: 1.0.0-rc2d — eksporty ocynku
 
 Natywny XLAM i raport Windows Excel z 2026-10-06 11:57:37 potwierdzają PASS,
 w tym nowe testy obu eksportów. Porównano wszystkie dziewięć modułów VBA
-z utrzymywanym kodem rc2d. Katalog aktualizacji wskazuje rc2d, wydanie 6.
+z utrzymywanym kodem rc2d. Zachowano paczkę rc2d (wydanie 6) do powrotu.
 
 „Eksport: ocynk” i „Sztuki + ocynk” zapisują `wzor.xls` w wybranym folderze,
 w formacie Excel 97–2003 i układzie dostarczonego `wzor1.xls`. Wbudowany wzorzec
@@ -40,7 +70,7 @@ z tego repozytorium, a następnie wskazaną wersją paczkę `.zekonupdate`.
 Nie zawiera wbudowanej starej wersji dodatku. Brak internetu lub błąd pobierania
 kończy operację komunikatem; nie powoduje instalacji starej wersji.
 
-Na 2026-10-06 katalog wskazuje **1.0.0-rc2d**, ze zweryfikowanym XLAM i raportem
+Na 2026-10-07 katalog wskazuje **1.0.0-rc2e**, ze zweryfikowanym XLAM i raportem
 Excel PASS. Aktualizator 1.2.0 pobiera tę paczkę bez wymiany EXE.
 
 Po udanej operacji wyświetla się osobne okno potwierdzenia i numer dodatku.

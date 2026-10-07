@@ -15,6 +15,7 @@ Public Function ZekonSelfTest() As String
     TestSplitWithFilter wb
     TestWorkLifecycle
     TestZincExports
+    TestWorkingCopies
     ws.Name = "Test"
     ws.Range("F2").Value2 = 2.5: ws.Range("F3").Formula = "=2.5"
     ws.Range("F4").Value2 = -2.5: ws.Rows(4).Hidden = True
@@ -95,7 +96,7 @@ Public Function ZekonSelfTest() As String
     wb.Close SaveChanges:=False: Set wb = Nothing
     TestPanelVersion
     Application.DisplayAlerts = oldAlerts
-    ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label, zinc template, zinc xls roundtrip, zinc split export, zinc no overwrite, zinc row limit."
+    ZekonSelfTest = "PASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label, zinc template, zinc xls roundtrip, zinc split export, zinc no overwrite, zinc row limit, readonly search copy, shared private copy, copy source unchanged, copy protection preserved."
     Exit Function
 Bad:
     e = Err.Number: message = Err.Description
@@ -107,6 +108,137 @@ Bad:
     Application.DisplayAlerts = oldAlerts
     On Error GoTo 0
     Err.Raise e, "ZekonSelfTest", message
+End Function
+
+Private Sub TestWorkingCopies()
+    Dim folder As String, suffix As Long, oldCopy As String
+    Dim number As Long, message As String
+    oldCopy = LastCopyPath
+    On Error GoTo Bad
+    folder = Environ$("TEMP") & "\ZekonCopyTest_" & Format$(Now, "yyyymmdd_hhnnss")
+    Do While Len(Dir$(folder & "_" & CStr(suffix), vbDirectory)) > 0
+        suffix = suffix + 1
+    Loop
+    folder = folder & "_" & CStr(suffix)
+    MkDir folder
+    TestOneWorkingCopy folder & "\readonly.xlsx", False
+    TestOneWorkingCopy folder & "\shared.xlsx", True
+    RmDir folder
+    LastCopyPath = oldCopy
+    Exit Sub
+Bad:
+    number = Err.Number: message = Err.Description
+    LastCopyPath = oldCopy
+    Err.Raise number, "TestWorkingCopies", message & " | Folder testu: " & folder
+End Sub
+
+Private Sub TestOneWorkingCopy(ByVal sourcePath As String, ByVal legacyShared As Boolean)
+    Dim source As Workbook, working As Workbook, ws As Worksheet, bt As Worksheet
+    Dim p(1 To 10) As Variant, first As Long, n As Long, caught As Long
+    Dim before As String, copyPath As String, oldSecurity As Long
+    Dim oldEvents As Boolean, oldAlerts As Boolean, number As Long, message As String
+    oldSecurity = Application.AutomationSecurity
+    oldEvents = Application.EnableEvents: oldAlerts = Application.DisplayAlerts
+    On Error GoTo Bad
+    Set source = Workbooks.Add(xlWBATWorksheet)
+    Set ws = source.Worksheets(1): ws.Name = "List"
+    ws.Range("A1").Value2 = "Position"
+    ws.Range("A2").Value2 = "P1": ws.Range("A3").Value2 = "PX"
+    ws.Range("F1").Value2 = "Weight": ws.Range("F2").Value2 = 2.5
+    ws.Range("G2").Formula = "=F2*2": ws.Rows(2).RowHeight = 27
+    Set bt = source.Worksheets.Add(After:=ws): bt.Name = "Target"
+    bt.Range("C1").Value2 = "Position": bt.Range("C2").Value2 = "P1": bt.Range("C3").Value2 = "P2"
+    If legacyShared Then
+        source.SaveAs Filename:=sourcePath, FileFormat:=xlOpenXMLWorkbook, AccessMode:=xlShared
+        AssertTrue source.MultiUserEditing, "Utworzenie wspoldzielonego skoroszytu testowego"
+    Else
+        source.SaveAs Filename:=sourcePath, FileFormat:=xlOpenXMLWorkbook, ReadOnlyRecommended:=True
+    End If
+    source.Close SaveChanges:=False: Set source = Nothing
+    Set source = Workbooks.Open(Filename:=sourcePath, UpdateLinks:=0, ReadOnly:=Not legacyShared, IgnoreReadOnlyRecommended:=True, Notify:=False)
+    Set ws = source.Worksheets("List"): Set bt = source.Worksheets("Target")
+    AssertTrue source.ReadOnly = (Not legacyShared), "Stan odczytu oryginalu testowego"
+    AssertTrue source.MultiUserEditing = legacyShared, "Stan wspoldzielenia oryginalu testowego"
+    before = ReadTestFile(sourcePath)
+    p(1) = "A": p(2) = "Target": p(3) = "C": p(4) = "AUTO"
+    first = ResolveFirstRow(ws, "A", "AUTO")
+    If Not legacyShared Then
+        On Error Resume Next
+        ValidateSearch ws, first, p, True
+        caught = Err.Number: Err.Clear
+        On Error GoTo Bad
+        AssertTrue caught <> 0, "Oryginal tylko do odczytu odrzucony bez pracy na kopii"
+    End If
+    ' Same two validation phases as the panel: source preflight, then copy access.
+    ValidateSearch ws, first, p, True, True
+    Set working = CopyWorkbook(source): copyPath = working.FullName
+    AssertTrue StrComp(copyPath, sourcePath, vbTextCompare) <> 0, "Kopia w innym pliku"
+    AssertTrue Not working.ReadOnly And Not working.MultiUserEditing, "Kopia zapisywalna i niewspoldzielona"
+    AssertTrue Application.AutomationSecurity = oldSecurity, "Przywrocony tryb zabezpieczen otwierania kopii"
+    AssertTrue Application.EnableEvents = oldEvents And Application.DisplayAlerts = oldAlerts, "Przywrocone zdarzenia i alerty kopii"
+    Set ws = working.Worksheets("List")
+    ValidateSearch ws, first, p, True
+    n = SearchPositions(ws, first, p, True)
+    AssertTrue n = 1 And working.Worksheets.Count = 3, "Wyszukiwanie i raport w kopii"
+    AssertTrue working.Worksheets("Target").Rows(3).Hidden, "Filtr zastosowany w kopii"
+    AssertTrue ws.Range("A3").FormatConditions.Count > 0, "Oznaczenie brakow w kopii"
+    n = RoundColumn(ws, 2, "F", False, False)
+    AssertTrue n = 1 And ws.Range("F2").Value2 = 3, "Pozostale operacje modyfikuja kopie"
+    AssertTrue ws.Range("G2").Formula = "=F2*2" And ws.Rows(2).RowHeight = 27, "Formuly i format w kopii"
+    working.Save
+    AssertTrue source.ReadOnly = (Not legacyShared) And source.MultiUserEditing = legacyShared, "Tryb oryginalu bez zmian"
+    AssertTrue source.Worksheets.Count = 2 And Not source.Worksheets("Target").Rows(3).Hidden, "Oryginal bez raportu i filtra"
+    AssertTrue source.Worksheets("List").Range("F2").Value2 = 2.5, "Dane oryginalu bez zmian"
+    AssertTrue source.Worksheets("List").Range("A3").FormatConditions.Count = 0, "Format oryginalu bez zmian"
+    AssertTrue ReadTestFile(sourcePath) = before, "Plik oryginalu nie zostal zapisany"
+    ws.Protect Password:="test"
+    caught = 0
+    On Error Resume Next
+    ValidateSearch ws, first, p, True, True
+    caught = Err.Number: Err.Clear
+    On Error GoTo Bad
+    AssertTrue caught <> 0 And ws.ProtectContents, "Plan kopii nie omija ochrony arkusza"
+    ws.Unprotect Password:="test"
+    working.Protect Password:="test", Structure:=True
+    caught = 0
+    On Error Resume Next
+    ValidateSearch ws, first, p, True, True
+    caught = Err.Number: Err.Clear
+    On Error GoTo Bad
+    AssertTrue caught <> 0 And working.ProtectStructure, "Plan kopii nie omija ochrony struktury"
+    working.Unprotect Password:="test"
+    working.Close SaveChanges:=False: Set working = Nothing
+    source.Close SaveChanges:=False: Set source = Nothing
+    Kill copyPath: Kill sourcePath
+    Exit Sub
+Bad:
+    number = Err.Number: message = Err.Description
+    On Error Resume Next
+    If Not working Is Nothing Then working.Close SaveChanges:=False
+    If Not source Is Nothing Then source.Close SaveChanges:=False
+    Application.AutomationSecurity = oldSecurity
+    Application.EnableEvents = oldEvents: Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
+    Err.Raise number, "TestOneWorkingCopy", message
+End Sub
+
+Private Function ReadTestFile(ByVal path As String) As String
+    Dim f As Integer, number As Long, message As String
+    Dim data As String
+    On Error GoTo Bad
+    f = FreeFile
+    Open path For Binary Access Read Shared As #f
+    data = Space$(LOF(f))
+    Get #f, , data
+    Close #f
+    ReadTestFile = data
+    Exit Function
+Bad:
+    number = Err.Number: message = Err.Description
+    On Error Resume Next
+    Close #f
+    On Error GoTo 0
+    Err.Raise number, "ReadTestFile", message
 End Function
 
 Private Sub TestZincExports()

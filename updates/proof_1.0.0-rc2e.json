@@ -1,0 +1,6 @@
+{
+  "XlamSha256": "444E755DB4668F4B93B5B35490099EEE8FB63786F06A8D2D222F0C03876B5447",
+  "NativeExcelReport": "2026-10-07 07:43:59\nPASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label, zinc template, zinc xls roundtrip, zinc split export, zinc no overwrite, zinc row limit, readonly search copy, shared private copy, copy source unchanged, copy protection preserved.\n",
+  "SourceComparison": "All nine native VBA modules compared with maintained rc2e source on 2026-10-07. Identifier case, Attribute lines and blank lines normalized; string literals preserved. No additional executable modules; worksheet cells empty.",
+  "TemplateSha256": "d82d260f23c0ac31eba21374870e654102daf80032e3c715756c691977473dba"
+}
