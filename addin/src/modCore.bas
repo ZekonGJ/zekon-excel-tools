@@ -1,7 +1,7 @@
 Option Explicit
 
 Public Const APP_ID As String = "ZekonTools"
-Public Const APP_VERSION As String = "1.0.0-rc2d"
+Public Const APP_VERSION As String = "1.0.0-rc2e"
 Public LastCopyPath As String
 Private progressForm As Object
 Private progressActive As Boolean, cancelRequested As Boolean
@@ -74,6 +74,11 @@ End Function
 Public Function CopyWorkbook(ByVal source As Workbook) As Workbook
     Dim folder As String, path As String, ext As String, security As Long, i As Long
     Dim e As Long, message As String
+    Dim copied As Workbook, oldEvents As Boolean, oldAlerts As Boolean
+    security = Application.AutomationSecurity
+    oldEvents = Application.EnableEvents: oldAlerts = Application.DisplayAlerts
+    LastCopyPath = ""
+    On Error GoTo Bad
     Select Case source.FileFormat
         Case 51: ext = ".xlsx"
         Case 52: ext = ".xlsm"
@@ -92,16 +97,38 @@ Public Function CopyWorkbook(ByVal source As Workbook) As Workbook
     ProgressTick "Zapisywanie kopii skoroszytu", 0, 0, True
     source.SaveCopyAs path
     LastCopyPath = path
-    security = Application.AutomationSecurity
-    On Error GoTo Bad
+    ' Only the new local file may have its read-only attribute cleared.
+    If (GetAttr(path) And vbReadOnly) <> 0 Then SetAttr path, GetAttr(path) And Not vbReadOnly
     Application.AutomationSecurity = 3
+    Application.EnableEvents = False
     ProgressTick "Otwieranie kopii skoroszytu", 0, 0, True
-    Set CopyWorkbook = Application.Workbooks.Open(Filename:=path, UpdateLinks:=0, ReadOnly:=False)
+    Set copied = Application.Workbooks.Open(Filename:=path, UpdateLinks:=0, ReadOnly:=False, IgnoreReadOnlyRecommended:=True, Notify:=False, AddToMru:=False)
+    If copied Is source Then Fail "Nie utworzono osobnej kopii roboczej."
+    If StrComp(copied.FullName, path, vbTextCompare) <> 0 Then Fail "Otwarta kopia ma inna sciezke niz plik roboczy."
+    If copied.ReadOnly Then Fail "Utworzona kopia nadal jest tylko do odczytu. Sprawdz uprawnienia folderu Kopie lub ochrone zapisu pliku. Oryginal pozostal bez zmian."
+    If copied.MultiUserEditing Then
+        ProgressTick "Przygotowanie prywatnej kopii roboczej", 0, 0, True
+        ' SaveCopyAs can retain legacy shared-workbook mode. Never change source.
+        Application.DisplayAlerts = False
+        If Not copied.ExclusiveAccess Then Fail "Nie mozna wylaczyc wspoldzielenia w kopii roboczej."
+        Application.DisplayAlerts = oldAlerts
+        If copied.MultiUserEditing Then Fail "Kopia nadal jest wspoldzielona. Operacja zatrzymana przed zmiana danych."
+    End If
+    Set CopyWorkbook = copied
     Application.AutomationSecurity = security
+    Application.EnableEvents = oldEvents
+    Application.DisplayAlerts = oldAlerts
     Exit Function
 Bad:
     e = Err.Number: message = Err.Description
+    On Error Resume Next
+    If Not copied Is Nothing Then
+        If Not copied Is source Then copied.Close SaveChanges:=False
+    End If
     Application.AutomationSecurity = security
+    Application.EnableEvents = oldEvents
+    Application.DisplayAlerts = oldAlerts
+    On Error GoTo 0
     Err.Raise e, "CopyWorkbook", message
 End Function
 

@@ -4,6 +4,28 @@ Historia projektu, prowadzona na życzenie użytkownika od 2026-10-02.
 Opisy wcześniejszych wydań odtworzono z dostępnego kodu i przebiegu pracy.
 Nie stanowią deklaracji, że wszystkie wydania były poprawne lub przetestowane.
 
+## 1.0.0-rc2e — 2026-10-07 — przygotowana, nieopublikowana
+
+- Zgłoszenie: wyszukiwanie odmawia pracy z komunikatem „Skoroszyt jest tylko
+  do odczytu” mimo zaznaczonego „Pracuj na kopii”. Potwierdzona przyczyna:
+  ValidateSearch wymagał zapisu oryginału przed wykonaniem CopyWorkbook.
+- Preflight dopuszcza odczyt oryginału przy planowanej kopii. Po utworzeniu
+  kopii panel powtarza walidację z pełnym wymaganiem zapisu w kopii.
+- CopyWorkbook pomija zalecenie otwarcia tylko do odczytu i sprawdza wynik
+  otwarcia. Odziedziczony starszy tryb współdzielenia jest wyłączany wyłącznie
+  w nowym pliku roboczym, z kontrolą tożsamości skoroszytu i ścieżki.
+- Oryginał nie jest odblokowywany, zapisywany ani pozbawiany współdzielenia.
+  Ochrona arkuszy/struktury i ograniczenia zapisu nie są obchodzone.
+- Przy powodzeniu i błędzie przywracane są AutomationSecurity, EnableEvents
+  i DisplayAlerts; przy błędzie zamykana jest tylko nieprzygotowana kopia.
+- Dodano natywne testy wyszukiwania na kopii pliku ReadOnly i Shared Workbook,
+  kontroli niezmienności oryginału oraz zachowania ochrony. Wymagane w bramce
+  publikacji; stare raporty rc2d nie spełniają wymagań wydania 7.
+- Weryfikacja lokalna: 9 testów Python PASS i zgodność źródeł z próbą B08.
+  Testy Windows Excel nie zostały tutaj wykonane; publikacja pozostaje
+  zablokowana do dostarczenia natywnego XLAM i raportu PASS.
+- Eksporty rc2d, wzorzec XLS oraz protokół aktualizatora pozostają bez zmian.
+
 ## 1.0.0-rc2d — 2026-10-06 — wydanie 6
 
 - Zakres: wyłącznie „Eksport: ocynk” i „Sztuki + ocynk”. Nazwa `wzor.xls`,

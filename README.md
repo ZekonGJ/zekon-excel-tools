@@ -2,6 +2,33 @@
 
 Projekt: https://github.com/ZekonGJ/zekon-excel-tools
 
+## Przygotowywana poprawka: 1.0.0-rc2e — praca na kopii
+
+Potwierdzony błąd rc2d: panel wyszukiwania wywoływał ValidateSearch przed
+CopyWorkbook, a walidator bezwarunkowo wymagał zapisu w oryginale. Skoroszyt
+otwarty tylko do odczytu był odrzucany także przy zaznaczonej pracy na kopii.
+Nie wymaga to dowodu, że plik jest współdzielony — sam ReadOnly wystarczał.
+
+rc2e uwzględnia zaplanowaną kopię w walidacji wstępnej i ponownie sprawdza
+możliwość zapisu już w faktycznym skoroszycie roboczym. Kopia jest otwierana
+lokalnie z pominięciem jedynie zalecenia odczytu; jeśli nadal jest tylko do
+odczytu, praca zostaje zatrzymana z właściwym komunikatem. Jeśli odziedziczy
+starszy tryb Shared Workbook, jest przełączana na wyłączny dostęp dopiero po
+sprawdzeniu, że jest osobnym plikiem pod nową ścieżką. Oryginał nie jest
+przełączany ani zapisywany. Ochrona arkuszy i struktury pozostaje respektowana.
+
+Nowe testy natywne tworzą pliki tylko do odczytu i współdzielone, wykonują
+wyszukiwanie w kopii, sprawdzają filtr, raport, oznaczenia, formuły i zmianę
+wagi oraz niezmienność oryginału, także na poziomie bajtów. Wymagany raport
+PASS z markerami readonly search copy, shared private copy, copy source
+unchanged, copy protection preserved. Dotychczasowych testów nie usunięto.
+
+Status: przygotowane źródła i próba deweloperska
+`support/ZEKON_BUDUJ_RC2E_B08.zip`, makro `ZEKON_BUDUJ_RC2E_B08`.
+Nie wykonano testów Windows Excel w środowisku asystenta. Aktualizator nadal
+wskazuje rc2d; rc2e będzie wydaniem 7 dopiero po natywnym XLAM i raporcie PASS.
+Instalator 1.2.0 pozostaje bez zmian.
+
 ## Aktualny dodatek: 1.0.0-rc2d — eksporty ocynku
 
 Natywny XLAM i raport Windows Excel z 2026-10-06 11:57:37 potwierdzają PASS,
