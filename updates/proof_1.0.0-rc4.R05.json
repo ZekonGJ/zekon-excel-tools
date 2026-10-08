@@ -1,0 +1,43 @@
+{
+  "Version": "1.0.0-rc4.R05",
+  "SourceSha256": "51AD8E578863C726C7C3E90043C7DE7E78D486A53ED410241CAEF183AE9D0D62",
+  "XlamSha256": "11082EE9EE9EA043F4088AD75F1E08E22F4966A92B657EC89586AA291B0F3190",
+  "ReportSha256": "49F165042AFFE1E9497BF0DC7C23DB8CED95E2E4A8F4A92223D925EBBAF48B9A",
+  "ExcelEdition": "Excel 2024",
+  "OfficeArchitecture": "64",
+  "ExcelBuild": "20430",
+  "TestedAt": "2026-10-08",
+  "SignatureStatus": "unsigned_reviewed",
+  "AppearanceAccepted": true,
+  "ReleaseDecision": "user_authorized_with_deferred_checks",
+  "DecisionAt": "2026-10-08T13:04:09+02:00",
+  "Checks": {
+    "word_docx_real_files": true,
+    "changes_network_lock_cancel": false,
+    "changes_revisions_and_conflicts": true,
+    "changes_independent_excel2024": true,
+    "changes_independent_excel2016": false,
+    "einhell_21_records_29203_70_kg": false,
+    "einhell_three_transport_totals": false,
+    "more_than_402_generated_rows": false,
+    "new_changed_filtered_work_prints": false,
+    "wide_layout_logo_and_black_white_prints": false,
+    "all_manual_fields_preserved": false,
+    "recovery_after_interruption": false,
+    "standalone_xlsx_without_addin": false,
+    "existing_macros_and_exports_regression": true
+  },
+  "DeferredChecks": {
+    "changes_network_lock_cancel": "Full manual acceptance not documented; automated native test results are recorded separately.",
+    "changes_independent_excel2016": "Excel 2016 test cancelled by user; compatibility unverified.",
+    "einhell_21_records_29203_70_kg": "Full manual acceptance not documented; automated native test results are recorded separately.",
+    "einhell_three_transport_totals": "Full manual acceptance not documented; automated native test results are recorded separately.",
+    "more_than_402_generated_rows": "Full manual acceptance not documented; automated native test results are recorded separately.",
+    "new_changed_filtered_work_prints": "Full manual acceptance not documented; automated native test results are recorded separately.",
+    "wide_layout_logo_and_black_white_prints": "Full manual acceptance not documented; automated native test results are recorded separately.",
+    "all_manual_fields_preserved": "Full manual acceptance not documented; automated native test results are recorded separately.",
+    "recovery_after_interruption": "Full manual acceptance not documented; automated native test results are recorded separately.",
+    "standalone_xlsx_without_addin": "Full manual acceptance not documented; automated native test results are recorded separately."
+  },
+  "NativeExcelReport": "PASS: builder R05\nPASS: rounding, formulas, hidden rows, split, zero quantity, export, leading zeros, filter, missing report, blank filter header, preflight, automatic starts, block copy, batch rounding, cancellation, calculation restore, form initialization, filtered split, filtered split all rows, filtered last row, filter criteria restore, permanent version label, zinc template, zinc xls roundtrip, zinc split export, zinc no overwrite, zinc row limit, readonly search copy, shared private copy, copy source unchanged, copy protection preserved.\nPASS: changes parser, changes mapping, changes hidden rows, changes copies, changes manual preservation, changes retry stable id, changes sorting, changes xlsx validation, changes duplicate approval, changes malformed approval, changes independent revisions, changes date conflicts.\nPASS: changes Word real DOCX, changes protected source, changes 302 source entries.\nPASS: production import, production filtered hidden source, production leading zeros, production 425 source rows, production missing surface, production diff, production partial complete, production update preservation, production idempotence, production 177 shifts, production increment quantity, production norm override, production historical dates, production transport sums, production sync conflicts, production xlsx roundtrip, production exact keys, production transactional rollback, production four-file consistency.\nExcel=16.0; Build=20430; OS=Windows (64-bit) NT 10.00"
+}

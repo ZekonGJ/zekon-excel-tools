@@ -1,0 +1,6 @@
+Zekon Tools 1.0.0-rc4.R05 — wydanie 8
+Rejestr zmian dokumentacji, ponowne dopasowanie brakujących elementów, zachowanie wpisów i poprawiony wygląd.
+Natywne testy automatyczne: Excel 2024 64-bit, build 20430 — PASS.
+Wygląd zaakceptowany przez użytkownika. Test Excel 2016 anulowany; zgodność niezweryfikowana.
+Wydanie na wyraźne polecenie użytkownika, przed zakończeniem pełnego odbioru ręcznego.
+Dodatek niepodpisany cyfrowo.
