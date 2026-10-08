@@ -1,7 +1,7 @@
 name: Build complete ZekonSetup
 on:
   push:
-    branches: [main]
+    branches: [main, installer-local-folder]
     paths: ["installer/**", "installer.Tests/**", "updates/**", "tools/verify_update_feed.py", ".github/workflows/build-installer.yml"]
   workflow_dispatch:
 permissions:
@@ -36,3 +36,4 @@ jobs:
           name: Zekon-addon-update
           path: dist/*.zekonupdate
           if-no-files-found: error
+

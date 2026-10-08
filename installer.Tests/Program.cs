@@ -64,6 +64,43 @@ using (var offline = new System.Net.Http.HttpClient(new FeedHandler(null, Array.
     try { UpdateFeed.DownloadAsync(offline).GetAwaiter().GetResult(); throw new Exception("Offline install should fail, not use stale fallback"); } catch (System.Net.Http.HttpRequestException) { }
 }
 Console.WriteLine("PASS: latest-feed versions, download hash, version consistency, traversal, offline failure without stale fallback.");
+// Network-folder deployment uses the supplied executable folder, not working directory.
+string folder = Path.Combine(Path.GetTempPath(), "zekon-local-" + Guid.NewGuid());
+Directory.CreateDirectory(folder);
+try
+{
+    try { LocalUpdate.ReadLatest(folder); throw new Exception("Missing local package accepted"); } catch (IOException) { }
+    using var older = MakePackage(version: "1.0.0-old", release: 8);
+    using var newer = MakePackage(version: "1.0.0-new", release: 9);
+    File.WriteAllBytes(Path.Combine(folder,"z-old.zekonupdate"), older.ToArray());
+    File.WriteAllBytes(Path.Combine(folder,"a-new.zekonupdate"), newer.ToArray());
+    File.WriteAllText(Path.Combine(folder,"newest.zekonupdate.part"), "unfinished transfer");
+    var bytes = LocalUpdate.ReadLatest(folder);
+    Check(bytes.SequenceEqual(newer.ToArray()), "Choose manifest release number, not filename or current folder");
+    File.Delete(Path.Combine(folder,"a-new.zekonupdate"));
+    using (var cached = new MemoryStream(bytes))
+    {
+        string stage = Path.Combine(folder,"stage");
+        Check(Package.Extract(cached,stage).ReleaseNumber == 9,"Local copy survives source disappearance");
+        Directory.Delete(stage,true);
+    }
+    File.WriteAllBytes(Path.Combine(folder,"a-new.zekonupdate"), newer.ToArray());
+    File.WriteAllBytes(Path.Combine(folder,"duplicate.zekonupdate"), newer.ToArray());
+    try { LocalUpdate.ReadLatest(folder); throw new Exception("Ambiguous release accepted"); } catch (InvalidDataException) { }
+    File.Delete(Path.Combine(folder,"duplicate.zekonupdate"));
+    using (var locked = new FileStream(Path.Combine(folder,"a-new.zekonupdate"),FileMode.Open,FileAccess.ReadWrite,FileShare.None))
+    {
+        try { LocalUpdate.ReadLatest(folder); throw new Exception("Locked package accepted"); } catch (IOException) { }
+    }
+    using var bad = MakePackage(corrupt:true,version:"1.0.0-new",release:9);
+    File.WriteAllBytes(Path.Combine(folder,"a-new.zekonupdate"),bad.ToArray());
+    using var corrupt = new MemoryStream(LocalUpdate.ReadLatest(folder));
+    try { Package.Extract(corrupt,Path.Combine(folder,"badstage")); throw new Exception("Tampered local package accepted"); } catch (InvalidDataException) { }
+    File.WriteAllText(Path.Combine(folder,"a-new.zekonupdate"),"partial zip");
+    try { LocalUpdate.ReadLatest(folder); throw new Exception("Broken package silently downgraded"); } catch (InvalidDataException) { }
+}
+finally { Directory.Delete(folder,true); }
+Console.WriteLine("PASS: local folder, manifest selection, partial files, cached bytes, duplicate release, file lock, corruption, no stale fallback.");
 sealed class FeedHandler(UpdateOffer? offer, byte[] package) : System.Net.Http.HttpMessageHandler
 {
     protected override Task<System.Net.Http.HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage request, CancellationToken token)
@@ -77,3 +114,4 @@ sealed class FeedHandler(UpdateOffer? offer, byte[] package) : System.Net.Http.H
         });
     }
 }
+
